@@ -1,9 +1,7 @@
+// src/lib/mongodb.ts
 import mongoose from "mongoose";
 
-declare global {
-  // To avoid TypeScript errors in development mode
-  var mongoose: any;
-}
+const MONGODB_URI = process.env.MONGODB_URI!;
 
 let cached = global.mongoose;
 
@@ -12,33 +10,20 @@ if (!cached) {
 }
 
 async function connectToDatabase() {
-  const MONGODB_URI = process.env.MONGODB_URI;
-
-  if (!MONGODB_URI) {
-    throw new Error(
-      "Please define the MONGODB_URI environment variable inside .env.local"
-    );
-  }
-
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
-    const options = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, options).then((mongoose) => {
-      return mongoose;
-    });
+    const options = { bufferCommands: false };
+    cached.promise = mongoose.connect(MONGODB_URI, options).then((mongoose) => mongoose);
   }
 
   try {
     cached.conn = await cached.promise;
-  } catch (e) {
+  } catch (err) {
     cached.promise = null;
-    throw e;
+    throw err;
   }
 
   return cached.conn;

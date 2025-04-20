@@ -32,7 +32,8 @@ export async function PATCH(req: NextRequest) {
 
     await user.save();
 
-    // Exclude password before returning
+    // Exclude password before returning and use password:_password if the no-unused-vars rule is enabled
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user.toObject();
 
     return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
