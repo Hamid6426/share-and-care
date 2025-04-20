@@ -1,0 +1,81 @@
+// contexts/AuthContext.tsx
+"use client";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useEffect
+} from "react";
+import axiosInstance from "@/utils/axiosInstance";
+
+interface AuthenticatedUser {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
+
+interface AuthContextType {
+  currentUser: AuthenticatedUser | null;
+  isUserLoading: boolean;
+  // you can still expose these if you need them:
+  setCurrentUser: React.Dispatch<React.SetStateAction<AuthenticatedUser | null>>;
+  loadUserProfile: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState<AuthenticatedUser | null>(null);
+  const [isUserLoading, setIsUserLoading] = useState(true);
+
+  // Prevent multiple fetches
+  const hasFetchedProfile = useRef(false);
+
+  const loadUserProfile = async () => {
+    setIsUserLoading(true);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setCurrentUser(null);
+      setIsUserLoading(false);
+      return;
+    }
+
+    try {
+      console.log("Token before fetch:", localStorage.getItem("token"));
+      const res = await axiosInstance.get("/api/profile/get", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCurrentUser(res.data);
+    } catch (error) {
+      console.error("Failed to load user profile:", error);
+      localStorage.removeItem("token");
+      setCurrentUser(null);
+    } finally {
+      setIsUserLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // only fetch once per full app lifetime
+    if (!hasFetchedProfile.current) {
+      hasFetchedProfile.current = true;
+      loadUserProfile();
+    }
+  }, []);
+
+  return (
+    <AuthContext.Provider
+      value={{ currentUser, setCurrentUser, loadUserProfile, isUserLoading }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be inside AuthProvider");
+  return ctx;
+};
