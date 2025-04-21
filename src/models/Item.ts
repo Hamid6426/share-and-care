@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
-import { IUser } from "@/types/User";
+import { IUser } from "./User";
 
 export interface IItem extends Document {
   title: string;
@@ -8,8 +8,8 @@ export interface IItem extends Document {
   condition: "new" | "like_new" | "used" | "poor";
   images: string[];
   quantity: number;
-  donor: IUser; // populated user object
-  receiver?: IUser; // optional populated receiver
+  donor: IUser; // populated user object with donor details 
+  receiver?: IUser; // populated receiver when he come to claim the item
   status: "available" | "reserved" | "donated";
   createdAt: Date;
   updatedAt: Date;
