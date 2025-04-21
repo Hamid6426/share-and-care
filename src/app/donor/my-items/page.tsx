@@ -91,7 +91,8 @@ const MyItems = () => {
                   <p className="mt-2 text-sm">
                     <strong>Quantity:</strong> {item.quantity}
                   </p>
-                  <Link href={`/donor/my-items/${item._id}`}>Edit Item</Link>
+                  <Link href={`/donor/my-items/${item._id}`}>Preview Item</Link>
+                  <Link href={`/donor/my-items/${item._id}/edit`}>Edit Item</Link>
 
                   {item.images.length > 0 && (
                     <div className="mt-2">

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 interface Item {
   _id: string;
@@ -24,7 +25,7 @@ interface Item {
 
 const ItemListing = () => {
   const [items, setItems] = useState<Item[]>([]);
-  const [totalItems, setTotalItems] = useState<number>(0);
+  const [_totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -87,15 +88,10 @@ const ItemListing = () => {
                   <p className="mt-2 text-sm">
                     <strong>Quantity:</strong> {item.quantity}
                   </p>
-                  {item.images.length > 0 && (
-                    <div className="mt-2">
-                      <h4 className="font-semibold">Images:</h4>
-                      <div className="flex space-x-2">
-                        {item.images.map((image, index) => (
-                          <img key={index} src={image} alt={`Image ${index + 1}`} className="w-20 h-20 object-cover rounded" />
-                        ))}
-                      </div>
-                    </div>
+                  {item.images.length > 0 ? (
+                    item.images.map((image, index) => <Image key={index} src={image} alt={`Image ${index + 1}`} width={80} height={80} className="w-20 h-20 object-cover rounded" />)
+                  ) : (
+                    <div className="w-20 h-20 flex items-center justify-center bg-gray-200 text-xl font-bold text-gray-600 rounded">{item.title.charAt(0).toUpperCase()}</div>
                   )}
                 </div>
               ))

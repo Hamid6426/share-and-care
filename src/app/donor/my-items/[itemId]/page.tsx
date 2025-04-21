@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axiosInstance from "@/utils/axiosInstance";
+import Image from "next/image";
+import Link from "next/link";
 
 interface Item {
   _id: string;
@@ -19,7 +21,7 @@ interface Item {
   updatedAt: string;
 }
 
-export default function ItemPage() {
+export default function MyItemPreview() {
   const { itemId } = useParams() as { itemId: string };
   const [item, setItem] = useState<Item | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,10 +49,10 @@ export default function ItemPage() {
 
   return (
     <div className="flex justify-center items-start min-h-screen py-12 px-4">
-      <div className="w-full max-w-2xl bg-green-100 shadow-lg rounded-lg p-8">
-        <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Item Details</h2>
+      <div className="w-full max-w-xl bg-green-100 shadow-lg rounded-lg p-8">
+        <h2 className="text-xl font-bold text-green-700 mb-6 text-center">Item Details</h2>
 
-        <div className="space-y-4">
+        <div className="space-y-4 mb-6">
           <FormField label="Title" value={item.title} />
           <FormField label="Description" value={item.description} />
           <FormField label="Category" value={item.category} />
@@ -64,16 +66,22 @@ export default function ItemPage() {
 
           <div>
             <label className="block text-green-800 text-sm mb-1">Images:</label>
-            <div className="grid grid-cols-2 gap-4 mt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-1">
               {loading || item.images.length === 0
                 ? Array.from({ length: 4 }).map((_, idx) => (
-                    <div key={idx} className="flex items-center justify-center rounded-md shadow border border-green-300 bg-green-200 h-32 text-green-700 font-bold text-xl animate-pulse">
+                    <div key={idx} className="flex items-center justify-center rounded-md shadow border border-green-300 bg-green-200 w-full aspect-square text-green-700 font-bold text-xl animate-pulse">
                       {idx + 1}
                     </div>
                   ))
-                : item.images.map((src, idx) => <img key={idx} src={src} alt={`Item image ${idx}`} className="rounded-md shadow border border-green-300 h-32 object-cover" />)}
+                : item.images.map((src, idx) => <Image width={80} height={80} key={idx} src={src} alt={`Item image ${idx}`} className="rounded-md shadow border border-green-300 h-32 object-cover" />)}
             </div>
           </div>
+        </div>
+
+<div className="w-full flex justify-center">
+        <Link href={`/donor/my-items/${item._id}/edit`} className="text-center w-full px-4 bg-green-600 hover:bg-green-700 text-white py-2 rounded">
+          Edit Item
+        </Link>
         </div>
       </div>
     </div>

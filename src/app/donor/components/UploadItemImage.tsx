@@ -28,7 +28,7 @@ const UploadItemImage: React.FC<Props> = ({ itemId, onUploadSuccess }) => {
 
     try {
       setIsUploading(true);
-      const res = await axiosInstance.patch(`/api/items/${itemId}/upload-image`, formData, {
+      const res = await axiosInstance.patch(`/api/items/my-items/${itemId}/upload-image`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
