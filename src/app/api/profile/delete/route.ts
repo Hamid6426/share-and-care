@@ -14,7 +14,7 @@ export async function DELETE(req: NextRequest) {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
     await connectToDatabase();
 
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.userId);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }

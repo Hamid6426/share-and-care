@@ -15,28 +15,41 @@ export async function PATCH(req: NextRequest) {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
     await connectToDatabase();
 
-    const user = await User.findById(decoded.id);
+    // Validate that the user exists
+    const user = await User.findById(decoded.userId);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Parse the JSON body
     const body = await req.json();
 
-    // Allow only certain fields to be updated
-    const allowedUpdates = ["name", "email"];
-    for (const key of Object.keys(body)) {
-      if (allowedUpdates.includes(key)) {
+    // Fields that cannot be updated
+    const excludedFields = [
+      "password", 
+      "role", 
+      "isVerified", 
+      "verifiedAt", 
+      "verificationToken", 
+      "verificationTokenExpire", 
+      "profilePicture"
+    ];
+
+    // Update only the fields provided in the request body and that are not in the excludedFields list
+    for (const key in body) {
+      if (Object.prototype.hasOwnProperty.call(body, key) && !excludedFields.includes(key)) {
         user[key] = body[key];
       }
     }
 
+    // Save the updated user to the database
     await user.save();
 
-    // Exclude password before returning and use password:_password if the no-unused-vars rule is enabled
+    // Exclude the restricted fields before returning the response\
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...userWithoutPassword } = user.toObject();
+    const { password, role, isVerified, verifiedAt, verificationToken, verificationTokenExpire, profilePicture, ...remainingFields } = user.toObject();
 
-    return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
+    return NextResponse.json({ user: remainingFields }, { status: 200 });
   } catch (error: any) {
     console.error("Error updating account:", error);
     if (error.name === "JsonWebTokenError") {

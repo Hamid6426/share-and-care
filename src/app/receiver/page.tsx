@@ -1,8 +1,7 @@
-
-export default function ReceiverDashboard() {
+export default function ReceiverDashboardOverview() {
   return (
     <div>
-      <div>afsoa</div>
+      <div>Receiver Dashboard Overview</div>
     </div>
-  )
+  );
 }

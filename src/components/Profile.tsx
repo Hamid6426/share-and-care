@@ -6,15 +6,15 @@ import { useAuth } from "@/contexts/AuthContext";
 // Function to format the date to MM-DD-YYYY
 const formatDate = (date: string | null) => {
   if (!date) return "Not Available"; // If there's no date, return a placeholder.
-  
+
   const dateObj = new Date(date);
-  const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Add 1 to month because it's 0-indexed.
-  const day = String(dateObj.getDate()).padStart(2, '0');
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Add 1 to month because it's 0-indexed.
+  const day = String(dateObj.getDate()).padStart(2, "0");
   const year = dateObj.getFullYear();
   return `${month} - ${day} - ${year}`;
 };
 
-const Profile = () => { 
+const Profile = () => {
   const { currentUser, isUserLoading } = useAuth();
 
   if (isUserLoading) {
@@ -38,28 +38,26 @@ const Profile = () => {
   );
 
   return (
-    <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold my-6 text-green-800">User Profile</h1>
+    <div className="max-w-sm mx-auto">
+      <h1 className="text-2xl font-bold my-6 text-green-800 ">User Profile</h1>
 
       {/* Profile Picture */}
       <div>
-        <label className="block text-green-800 text-sm mb-1">Profile Picture:</label>
         <div className="mb-4">
           {currentUser.profilePicture ? (
-            <img
-              src={currentUser.profilePicture}
-              alt="Profile Picture"
-              className="w-32 h-32 object-cover rounded-full mx-auto"
-            />
+            <img src={currentUser.profilePicture} alt="Profile Picture" className="w-32 h-32 object-cover rounded-full" />
           ) : (
-            <p className="text-red-500">No profile picture available</p>
+            <>
+              <label className="block text-green-800 text-sm mb-1">Profile Picture:</label>
+              <p className="text-red-500">No profile picture available</p>
+            </>
           )}
         </div>
       </div>
 
       {formField("Name", currentUser.name)}
       {formField("Email", currentUser.email, "email")}
-      {formField("Role", currentUser.role)}
+      {formField("Role", currentUser.role.toUpperCase())}
       {formField("Phone", currentUser.phone)}
       {formField("Country", currentUser.country)}
       {formField("State", currentUser.state)}

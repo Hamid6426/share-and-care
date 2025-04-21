@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
-          <ToastContainer position="top-center" autoClose={3000} />
+          <ToastContainer position="top-center" autoClose={2000} />
           <Navbar />
           {children}
         </AuthProvider>
