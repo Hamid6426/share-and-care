@@ -25,17 +25,32 @@ async function authorize(req: NextRequest) {
   return { user, userId: decoded.userId };
 }
 
-export async function POST(req: NextRequest) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { itemId: string } }
+) {
   try {
     const { user, userId } = await authorize(req);
-    if (user.role !== "donor" && user.role !== "admin" && user.role !== "superadmin") {
-      return NextResponse.json({ error: "Permission denied" }, { status: 403 });
+    const item = await Item.findById(params.itemId);
+    if (!item) throw { status: 404, message: "Item not found" };
+
+    // only donor or admin
+    if (
+      item.donor.toString() !== userId &&
+      user.role !== "admin" &&
+      user.role !== "superadmin"
+    ) {
+      throw { status: 403, message: "Permission denied" };
     }
-    const body = await req.json();
-    const item = await Item.create({ ...body, donor: userId });
-    return NextResponse.json(item, { status: 201 });
+
+    const updates = await req.json();
+    Object.assign(item, updates);
+    await item.save();
+    return NextResponse.json(item, { status: 200 });
   } catch (err: any) {
-    console.error(err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { error: err.message || "Failed to update" },
+      { status: err.status || 500 }
+    );
   }
 }

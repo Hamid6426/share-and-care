@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import React from "react";
-import { MdHome, MdDashboard, MdRequestPage, MdSettings, MdLogout, MdAddBox, MdPerson } from "react-icons/md";
+import { MdHome, MdDashboard, MdRequestPage, MdSettings, MdLogout, MdAddBox, MdPerson, MdApps } from "react-icons/md";
 import Tooltip from "@/components/Tooltips";
 
 export default function DonorSidebar() {
@@ -22,14 +22,9 @@ export default function DonorSidebar() {
             <MdDashboard className="hover:text-green-600" />
           </Link>
         </Tooltip>
-        <Tooltip message="Add Item">
-          <Link href="/donor/add-item">
-            <MdAddBox className="hover:text-green-600" />
-          </Link>
-        </Tooltip>
-        <Tooltip message="Requests">
-          <Link href="/donor/requests">
-            <MdRequestPage className="hover:text-green-600" />
+        <Tooltip message="My Items">
+          <Link href="/donor/my-items">
+            <MdApps className="hover:text-green-600" />
           </Link>
         </Tooltip>
         <Tooltip message="Profile">
