@@ -1,17 +1,10 @@
 // components/ReceiverSidebar.jsx
-'use client';
+"use client";
 
-import Link from 'next/link';
-import React from 'react';
-import {
-  MdHome,
-  MdDashboard,
-  MdRequestPage,
-  MdSettings,
-  MdLogout,
-  MdAddBox,
-} from 'react-icons/md';
-import Tooltip from '@/components/Tooltips';
+import Link from "next/link";
+import React from "react";
+import { MdHome, MdDashboard, MdRequestPage, MdSettings, MdLogout, MdAddBox, MdPerson } from "react-icons/md";
+import Tooltip from "@/components/Tooltips";
 
 export default function DonorSidebar() {
   return (
@@ -37,6 +30,11 @@ export default function DonorSidebar() {
         <Tooltip message="Requests">
           <Link href="/donor/requests">
             <MdRequestPage className="hover:text-green-600" />
+          </Link>
+        </Tooltip>
+        <Tooltip message="Profile">
+          <Link href="/receiver/profile">
+            <MdPerson className="hover:text-green-600" />
           </Link>
         </Tooltip>
         <Tooltip message="Settings">

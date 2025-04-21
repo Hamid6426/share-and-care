@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
     await connectToDatabase();
 
-    const user = await User.findById(decoded.userId).select("-password"); // Exclude password from response
+    const user = await User.findById(decoded.userId).select("-password -verificationToken -verificationTokenExpire -__v"); // Exclude password from response
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }

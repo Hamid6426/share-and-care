@@ -1,12 +1,6 @@
 // contexts/AuthContext.tsx
 "use client";
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useRef,
-  useEffect
-} from "react";
+import React, { createContext, useContext, useState, useRef, useEffect } from "react";
 import axiosInstance from "@/utils/axiosInstance";
 
 interface AuthenticatedUser {
@@ -14,6 +8,32 @@ interface AuthenticatedUser {
   email: string;
   name: string;
   role: string;
+
+  isVerified: boolean;
+  verifiedAt: string | null;
+
+  country: string | null;
+  state: string | null;
+  city: string | null;
+  street: string | null;
+  zipCode: string | null;
+  address: string | null;
+  phone: string | null;
+
+  whatsapp: string | null;
+  telegram: string | null;
+  discord: string | null;
+  facebook: string | null;
+  twitter: string | null;
+  instagram: string | null;
+  linkedin: string | null;
+  tiktok: string | null;
+
+  bio: string | null;
+  profilePicture: string | null;
+
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface AuthContextType {
@@ -65,13 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{ currentUser, setCurrentUser, loadUserProfile, isUserLoading }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ currentUser, setCurrentUser, loadUserProfile, isUserLoading }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
