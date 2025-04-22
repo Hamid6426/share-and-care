@@ -50,7 +50,7 @@ const AddItem = () => {
 
       const itemId = res.data._id;
       toast.success("Item created!");
-      // router.push(`/donor/my-items/${itemId}/add-images`); // Redirect to detail page no redirect since there is a second step for uploading pictures
+      router.push(`/donor/my-items/${itemId}/edit`); // Redirect to detail page no redirect since there is a second step for uploading pictures
     } catch (err: any) {
       console.error(err);
       toast.error(err.response?.data?.error || "Failed to create item.");

@@ -25,23 +25,20 @@ async function authorize(req: NextRequest) {
   return { user, userId: decoded.userId };
 }
 
-export async function GET(req: NextRequest, { params }: { params: { itemId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ itemId: string }> }) {
   try {
     const { user, userId } = await authorize(req);
     // params should be awaited before using its properties
-    const itemId = params.itemId;
-      const item = await Item.findById(itemId)
-      .populate("donor", "name email")
-      .populate("receiver", "name email");
+    const { itemId } = await params;
+    const item = await Item.findById(itemId).populate("donor", "name email").populate("receiver", "name email");
     if (!item) throw { status: 404, message: "Item not found" };
 
     if (item.donor.toString() !== userId && !["donor", "admin", "superadmin"].includes(user.role)) {
       throw { status: 403, message: "Permission denied" };
-    } 
+    }
 
     return NextResponse.json(item, { status: 200 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Failed to fetch item" }, { status: err.status || 500 });
   }
 }
-

@@ -6,7 +6,7 @@ import User from "@/models/User";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 
-export async function PATCH(req: NextRequest, { params }: { params: { itemId: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ itemId: string }> }) {
   // 1) Auth check
   const auth = req.headers.get("Authorization") || "";
   if (!auth.startsWith("Bearer ")) {
@@ -26,8 +26,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { itemId: st
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
+  const { itemId } = await params;
 
-  const item = await Item.findById(params.itemId);
+  const item = await Item.findById(itemId);
   if (!item) {
     return NextResponse.json({ error: "Item not found" }, { status: 404 });
   }
@@ -53,7 +54,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { itemId: st
   const buffer = Buffer.from(bytes);
 
   // 6) Ensure directory exists
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "items", params.itemId);
+  const uploadDir = path.join(process.cwd(), "public", "uploads", "items", itemId);
   await mkdir(uploadDir, { recursive: true });
 
   // 7) Unique filename
@@ -63,7 +64,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { itemId: st
   await writeFile(filePath, buffer);
 
   // 8) Save URL in item.images
-  const imageUrl = `/uploads/items/${params.itemId}/${fileName}`;
+  const imageUrl = `/uploads/items/${itemId}/${fileName}`;
   item.images.push(imageUrl);
 
   if (item.images.length > 4) {

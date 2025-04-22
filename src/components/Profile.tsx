@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import Image from "next/image";
 
 // Function to format the date to MM-DD-YYYY
 const formatDate = (date: string | null) => {
@@ -45,7 +46,7 @@ const Profile = () => {
       <div>
         <div className="mb-4">
           {currentUser.profilePicture ? (
-            <img src={currentUser.profilePicture} alt="Profile Picture" className="w-32 h-32 object-cover rounded-full" />
+            <Image width={40} height={40} src={currentUser.profilePicture} alt="Profile Picture" className="w-32 h-32 object-cover rounded-full" />
           ) : (
             <>
               <label className="block text-green-800 text-sm mb-1">Profile Picture:</label>

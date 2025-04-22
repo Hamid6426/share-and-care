@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import axiosInstance from "@/utils/axiosInstance";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Item {
   _id: string;
@@ -25,7 +26,8 @@ interface Item {
 
 const MyItems = () => {
   const [items, setItems] = useState<Item[]>([]);
-  const [totalItems, setTotalItems] = useState<number>(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -99,7 +101,7 @@ const MyItems = () => {
                       <h4 className="font-semibold">Images:</h4>
                       <div className="flex space-x-2">
                         {item.images.map((image, index) => (
-                          <img key={index} src={image} alt={`Image ${index + 1}`} className="w-20 h-20 object-cover rounded" />
+                          <Image key={index} width={80} height={80} src={image} alt={`Image ${index + 1}`} className="w-20 h-20 object-cover rounded" />
                         ))}
                       </div>
                     </div>

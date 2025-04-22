@@ -25,21 +25,15 @@ async function authorize(req: NextRequest) {
   return { user, userId: decoded.userId };
 }
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { itemId: string } }
-) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ itemId: string }> }) {
   try {
     const { user, userId } = await authorize(req);
-    const item = await Item.findById(params.itemId);
+    const { itemId } = await params;
+    const item = await Item.findById(itemId);
     if (!item) throw { status: 404, message: "Item not found" };
 
     // only donor or admin
-    if (
-      item.donor.toString() !== userId &&
-      user.role !== "admin" &&
-      user.role !== "superadmin"
-    ) {
+    if (item.donor.toString() !== userId && user.role !== "admin" && user.role !== "superadmin") {
       throw { status: 403, message: "Permission denied" };
     }
 
@@ -48,9 +42,6 @@ export async function PATCH(
     await item.save();
     return NextResponse.json(item, { status: 200 });
   } catch (err: any) {
-    return NextResponse.json(
-      { error: err.message || "Failed to update" },
-      { status: err.status || 500 }
-    );
+    return NextResponse.json({ error: err.message || "Failed to update" }, { status: err.status || 500 });
   }
 }

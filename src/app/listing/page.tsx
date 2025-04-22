@@ -25,6 +25,7 @@ interface Item {
 
 const ItemListing = () => {
   const [items, setItems] = useState<Item[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);

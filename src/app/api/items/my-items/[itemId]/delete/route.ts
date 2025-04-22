@@ -25,10 +25,11 @@ async function authorize(req: NextRequest) {
   return { user, userId: decoded.userId };
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { itemId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ itemId: string }> }) {
   try {
     const { user, userId } = await authorize(req);
-    const item = await Item.findById(params.itemId);
+    const { itemId } = await params;
+    const item = await Item.findById(itemId);
     if (!item) throw { status: 404, message: "Item not found" };
 
     if (item.donor.toString() !== userId && !["admin", "superadmin"].includes(user.role)) {

@@ -8,7 +8,7 @@ import UploadProfilePicture from "@/components/UploadProfilePicture";
 import { useAuth } from "@/contexts/AuthContext";
 import React from "react";
 
-export default function page() {
+export default function DonorSettings() {
   const { currentUser, isUserLoading } = useAuth();
 
   if (isUserLoading) {
