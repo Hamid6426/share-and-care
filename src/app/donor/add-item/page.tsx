@@ -12,8 +12,9 @@ const AddItem = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    quantity: 1,
     category: "",
-    condition: "used", // Default value to "used"
+    condition: "used",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,7 +51,7 @@ const AddItem = () => {
 
       const itemId = res.data._id;
       toast.success("Item created!");
-      router.push(`/donor/my-items/${itemId}/edit`); // Redirect to detail page no redirect since there is a second step for uploading pictures
+      router.push(`/donor/my-items/${itemId}/edit`);
     } catch (err: any) {
       console.error(err);
       toast.error(err.response?.data?.error || "Failed to create item.");
@@ -60,36 +61,79 @@ const AddItem = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-green-100 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4 text-green-800">Add New Item</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="title" type="text" value={formData.title} onChange={handleChange} placeholder="Item title" required className="w-full px-4 py-2 border border-green-500 rounded" />
-        <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Item description" required className="w-full px-4 py-2 border border-green-500 rounded" />
-        <input
-          name="category"
-          type="text"
-          value={formData.category}
-          onChange={handleChange}
-          placeholder="Category (e.g. clothes, electronics)"
-          className="w-full px-4 py-2 border border-green-500 rounded"
-        />
-        
-        {/* Condition Dropdown */}
-        <select
-          name="condition"
-          value={formData.condition}
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-green-500 rounded"
-        >
-          <option value="new">New</option>
-          <option value="used">Used</option>
-          <option value="poor">Poor</option>
-        </select>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <div className="w-full max-w-xl mx-auto p-6 bg-green-100 rounded-lg shadow">
+        <h2 className="text-2xl font-bold mb-6 text-green-800">Add New Item</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="title" className="block mb-1 font-medium text-green-900">
+              Title
+            </label>
+            <input id="title" name="title" type="text" value={formData.title} onChange={handleChange} required className="w-full px-4 py-2 border border-green-500 rounded" placeholder="Item title" />
+          </div>
 
-        <button type="submit" disabled={isSubmitting} className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded">
-          {isSubmitting ? "Submitting…" : "Add Item"}
-        </button>
-      </form>
+          <div>
+            <label htmlFor="description" className="block mb-1 font-medium text-green-900">
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-green-500 rounded"
+              placeholder="Item description"
+              rows={4}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="quantity" className="block text-green-800 text-sm mb-1">Quantity</label>
+            <input
+              id="quantity"
+              name="quantity"
+              type="number"
+              value={formData.quantity}
+              onChange={handleChange}
+              min={1}
+              className="w-full px-4 py-2 border border-green-500 rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="category" className="block mb-1 font-medium text-green-900">
+              Category
+            </label>
+            <input
+              id="category"
+              name="category"
+              type="text"
+              value={formData.category}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-green-500 rounded"
+              placeholder="e.g. clothes, electronics"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="condition" className="block mb-1 font-medium text-green-900">
+              Condition
+            </label>
+            <select id="condition" name="condition" value={formData.condition} onChange={handleChange} className="w-full px-4 py-2 border border-green-500 rounded">
+              <option value="new">New</option>
+              <option value="used">Used</option>
+              <option value="poor">Poor</option>
+            </select>
+          </div>
+
+          <button type="submit" disabled={isSubmitting} className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded">
+            {isSubmitting ? "Submitting…" : "Add Item"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

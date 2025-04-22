@@ -14,6 +14,7 @@ const UploadItemImage: React.FC<Props> = ({ itemId, onUploadSuccess }) => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    console.log("Selected file:", file);
     if (file) setSelectedFile(file);
   };
 
@@ -24,6 +25,7 @@ const UploadItemImage: React.FC<Props> = ({ itemId, onUploadSuccess }) => {
     if (!token) return toast.error("Not authorized");
 
     const formData = new FormData();
+    console.log("Incoming form data:", formData.get("itemImage"));
     formData.append("itemImage", selectedFile);
 
     try {
@@ -45,18 +47,20 @@ const UploadItemImage: React.FC<Props> = ({ itemId, onUploadSuccess }) => {
   };
 
   return (
-    <div className="space-y-2">
-      <input
-        type="file"
-        accept="image/png, image/jpeg"
-        onChange={handleFileChange}
-        className="block w-full"
-      />
-      <button
-        onClick={handleUpload}
-        disabled={isUploading || !selectedFile}
-        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:opacity-50"
-      >
+    <div className="space-y-4">
+      {/* Hidden file input */}
+      <input id="fileUpload" type="file" accept="image/png, image/jpeg" onChange={handleFileChange} className="hidden" />
+
+      {/* Custom styled label acting as button */}
+      <label htmlFor="fileUpload" className="inline-block mr-4 cursor-pointer bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded">
+        Choose File
+      </label>
+
+      {/* Show selected file name (optional) */}
+      {selectedFile && <p className="text-sm text-gray-700">Selected: {selectedFile.name}</p>}
+
+      {/* Upload button */}
+      <button type="button" onClick={handleUpload} disabled={isUploading || !selectedFile} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50">
         {isUploading ? "Uploading..." : "Upload Image"}
       </button>
     </div>

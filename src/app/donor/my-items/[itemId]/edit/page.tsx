@@ -127,25 +127,25 @@ export default function EditItem() {
         {/* ──────── EXISTING IMAGES ──────── */}
         <div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-1">
-            {loading || images.length === 0
-              ? Array.from({ length: 4 }).map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-center rounded-md shadow border border-green-300 bg-green-200 w-full aspect-square text-green-700 font-bold text-xl animate-pulse"
-                  >
-                    {idx + 1}
-                  </div>
-                ))
-              : images.map((src, idx) => <Image width={80} height={80} key={idx} src={src} alt={`Item image ${idx}`} className="rounded-md shadow border border-green-300 h-32 object-cover" />)}
+            {Array.from({ length: 4 }).map((_, idx) => {
+              const imageUrl = images[idx];
+              return imageUrl ? (
+                <Image key={idx} width={240} height={180} src={imageUrl} alt={`Item image ${idx + 1}`} className="rounded-md shadow border border-green-300 object-fill w-full aspect-square" />
+              ) : (
+                <div key={idx} className="flex items-center justify-center rounded-md shadow border border-green-300 bg-green-200 w-full aspect-square text-green-700 font-bold text-xl">
+                  {idx + 1}
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        <div>
+        {/* ──────── IMAGE UPLOADER ──────── */}
+        <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Upload New Image</h3>
           <UploadItemImage
             itemId={itemId}
             onUploadSuccess={(imageUrl) => {
-              // append the new URL so it shows up in the grid above
               setImages((imgs) => [...imgs, imageUrl]);
               toast.success("Image added!");
             }}

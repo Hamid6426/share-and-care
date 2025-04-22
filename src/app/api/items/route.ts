@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Permission denied" }, { status: 403 });
     }
     const body = await req.json();
-    if (!body.title || !body.description || !body.category || !body.condition) {
+    if (!body.title || !body.description || !body.quantity || !body.category || !body.condition) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
     const item = await Item.create({ ...body, donor: userId });

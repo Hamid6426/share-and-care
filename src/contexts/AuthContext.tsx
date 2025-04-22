@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useRef, useEffect } from "r
 import axiosInstance from "@/utils/axiosInstance";
 
 interface AuthenticatedUser {
-  id: string;
+  _id: string;
   email: string;
   name: string;
   role: string;

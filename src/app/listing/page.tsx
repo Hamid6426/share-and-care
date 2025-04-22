@@ -69,7 +69,7 @@ const ItemListing = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow">
+    <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow">
       <h2 className="text-3xl font-bold mb-6 text-green-800 text-center">Item Listings</h2>
 
       {isLoading ? (
@@ -79,17 +79,17 @@ const ItemListing = () => {
           {items.length === 0 ? (
             <p className="text-center text-gray-500">No items found.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {items.map((item) => {
                 const status = statusInfo[item.status] || statusInfo["available"];
                 return (
                   <div key={item._id} className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                     {item.images.length > 0 ? (
-                      <Image src={item.images[0]} alt={item.title} width={320} height={180} className="w-full h-48 object-cover rounded-t-lg" />
+                      <Image src={item.images[0]} alt={item.title} width={240} height={180} className="w-full object-fill rounded-t-lg aspect-[4/3]" />
                     ) : (
-                      <div className="w-full h-48 flex items-center justify-center bg-gray-200 text-4xl font-bold text-gray-600 rounded-t-lg">{item.title.charAt(0).toUpperCase()}</div>
+                      <div className="w-full flex items-center justify-center bg-gray-200 text-4xl font-bold text-gray-600 rounded-t-lg  aspect-[4/3]">{item.title.charAt(0).toUpperCase()}</div>
                     )}
-                    <div className="p-3">
+                    <div className="p-3 border-t border-gray-200">
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold text-gray-800">
                           {item.title} ({item.quantity}x)
@@ -101,7 +101,7 @@ const ItemListing = () => {
                           </span>
                         </div>
                       </div>
-                      <p className="text-base text-gray-700 my-2">{item.description}</p>
+                      <p className="text-gray-700 my-2 text-sm h-10">{item.description.length > 90 ? item.description.slice(0, 90) + "..." : item.description}</p>
                       <Link href={item.donor._id} className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition duration-200 font-bold">
                         Contact {item.donor.name}
                       </Link>

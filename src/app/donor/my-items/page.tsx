@@ -101,7 +101,7 @@ const MyItems = () => {
                       <h4 className="font-semibold">Images:</h4>
                       <div className="flex space-x-2">
                         {item.images.map((image, index) => (
-                          <Image key={index} width={80} height={80} src={image} alt={`Image ${index + 1}`} className="w-20 h-20 object-cover rounded" />
+                          <Image key={index} width={240} height={180} src={image} alt={`Image ${index + 1}`} className="w-20 h-20 object-cover rounded" />
                         ))}
                       </div>
                     </div>
