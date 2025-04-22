@@ -10,7 +10,7 @@ export interface IItem extends Document {
   quantity: number;
   donor: IUser; // populated user object with donor details
   receiver?: IUser; // populated receiver when he/she come to claim the item
-  status: "available" | "claimed" | "picked-up" | "donated";
+  status: "available" | "claimed" | "picked" | "donated";
   createdAt: Date;
   updatedAt: Date; 
 }
@@ -36,7 +36,7 @@ const ItemSchema: Schema<IItem> = new Schema(
     receiver: { type: Schema.Types.ObjectId, ref: "User", default: null },
     status: {
       type: String,
-      enum: ["available", "claimed", "picked-up", "donated"],
+      enum: ["available", "claimed", "picked", "donated"],
       default: "available",
     },
   },
