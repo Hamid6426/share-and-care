@@ -1,6 +1,6 @@
 // /api/items/[itemId]/request/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import connectToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/utils/mongodb";
 import jwt from "jsonwebtoken";
 import Item from "@/models/Item";
 import User from "@/models/User";

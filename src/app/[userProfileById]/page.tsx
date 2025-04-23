@@ -19,7 +19,6 @@ const PublicProfile = () => {
   const { userProfileById } = useParams() as { userProfileById: string };
 
   const { currentUser, isUserLoading } = useAuth();
-  const [isChatOpen, setIsChatOpen] = useState(false); // State to manage the chat modal
 
   if (isUserLoading) {
     return <p>Loading...</p>;

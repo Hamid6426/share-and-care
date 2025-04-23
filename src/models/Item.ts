@@ -4,21 +4,33 @@ import { IUser } from "./User";
 export interface IItem extends Document {
   title: string;
   description: string;
+  quantity: number;
   category: string;
   condition: "new" | "used" | "poor";
   images: string[];
-  quantity: number;
-  donor: IUser; // populated user object with donor details
-  receiver?: IUser | null; // populated receiver when he/she come to claim the item
+
+  donor: IUser; // populated donor details
+  receiver?: IUser | null; // populated when someone claims the item
+  requesters: IUser[]; // populated list of users who have requested
+
   status: "available" | "requested" | "claimed" | "picked" | "donated";
   // available mean an item is available for donation
-  // claimed mean a user has claimed the item but not yet picked it up "it is confirmed by donor after request from receiver"
-  // picked mean a user has picked up the item
-  // donated mean the item is no longer available for donation
-  isRequested: boolean; // true if receiver has requested for the item
-  requestAccepted: boolean; // true if the request is accepted by the donor
-  requestCancelled: boolean; // true if the request is cancelled by the receiver
-  isCancelled: boolean; // true if the item is cancelled by the donor
+  // requested mean a user has requested for the item "it is not confirmed by donor yet"
+  // claimed mean the item is claimed by the receiver "it is not picked up yet"
+  // picked mean a receiver has picked up the item, it would be marked as donated
+  // donated mean the item is donated to the receiver and request is completed
+
+  // flags for individual transitions (helps drive UI and business logic)
+  isRequested: boolean; // set true when any request is made
+  requestAccepted: boolean; // true if donor approves a specific request
+  requestCancelled: boolean; // true if receiver withdraws their request
+
+  isAccepted: boolean; // true when a request has been accepted
+  isCancelled: boolean; // true if donor cancels the entire item
+  isClaimed: boolean; // true when donor confirms a pickup
+  isPicked: boolean; // true when receiver collects the item
+  isDonated: boolean; // true when the donation is fully completed
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,6 +43,7 @@ const ItemSchema: Schema<IItem> = new Schema(
   {
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
+    quantity: { type: Number, default: 1, min: 1 },
     category: { type: String, required: true, trim: true },
     condition: {
       type: String,
@@ -38,22 +51,40 @@ const ItemSchema: Schema<IItem> = new Schema(
       default: "used",
       required: true,
     },
-    images: { type: [String], validate: [validateImageLimit, "Cannot add more than 4 images"], default: [] },
-    quantity: { type: Number, default: 1, min: 1 },
+
+    images: {
+      type: [String],
+      validate: [validateImageLimit, "Cannot add more than 4 images"],
+      default: [],
+    },
+
     donor: { type: Schema.Types.ObjectId, ref: "User", required: true },
     receiver: { type: Schema.Types.ObjectId, ref: "User", default: null },
+
+    // ——— Track who has requested this item ———
+    requesters: {
+      type: [{ type: Schema.Types.ObjectId, ref: "User" }],
+      default: [],
+    },
+
     status: {
       type: String,
       enum: ["available", "requested", "claimed", "picked", "donated"],
       default: "available",
     },
+
+    // —— Boolean flags for each stage ——
     isRequested: { type: Boolean, default: false },
     requestAccepted: { type: Boolean, default: false },
     requestCancelled: { type: Boolean, default: false },
+
+    isAccepted: { type: Boolean, default: false },
     isCancelled: { type: Boolean, default: false },
+    isClaimed: { type: Boolean, default: false },
+    isPicked: { type: Boolean, default: false },
+    isDonated: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-// Prevent model overwrite upon hot reload in dev
 export default (mongoose.models.Item as Model<IItem>) || mongoose.model<IItem>("Item", ItemSchema);

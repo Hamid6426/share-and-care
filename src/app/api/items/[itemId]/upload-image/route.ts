@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import connectToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/utils/mongodb";
 import Item from "@/models/Item";
 import User from "@/models/User";
 import { mkdir, writeFile } from "fs/promises";

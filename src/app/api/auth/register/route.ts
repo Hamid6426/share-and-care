@@ -1,6 +1,6 @@
 // share-and-care/src/app/api/register/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import connectToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/utils/mongodb";
 import User from "@/models/User";
 import bcrypt from "bcrypt";
 import sendMail from "@/utils/sendMail";

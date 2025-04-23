@@ -67,7 +67,7 @@ export default function ChatRoom() {
   useEffect(() => {
     // Scroll to bottom on new message
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, fetchMessages]);
 
   if (loading || isUserLoading) return <p>Loading chat...</p>;
   if (!currentUser) return <p>User not found</p>;

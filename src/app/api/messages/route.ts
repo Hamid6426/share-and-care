@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import Message from "@/models/Message";
 import Chat from "@/models/Chat";
 import { Types } from "mongoose";
-import connectToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/utils/mongodb";
 import jwt from "jsonwebtoken";
 
 // Send a message to a chat from a sender
@@ -18,8 +18,7 @@ export async function POST(req: Request) {
     }
 
     const token = auth.replace("Bearer ", "");
-    let decoded: any;
-    decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
     const senderId = decoded.userId;
     await connectToDatabase();
 

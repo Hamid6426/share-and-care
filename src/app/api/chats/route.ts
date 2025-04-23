@@ -1,9 +1,8 @@
 // app/api/chats/route.ts
 import { NextResponse, NextRequest } from "next/server";
-import connectToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/utils/mongodb";
 import Chat from "@/models/Chat";
 import jwt from "jsonwebtoken";
-import User from "@/models/User";
 import { Types } from "mongoose";
 
 // CHAT STARTER
@@ -23,7 +22,7 @@ export async function POST(req: Request) {
 
     if (senderId === receiverId) {
       return NextResponse.json({ error: "Cannot start chat with self" }, { status: 400 });
-    }    
+    }
 
     const chatId = [senderId, receiverId].sort().join("_"); // same chatId for both users
 
@@ -55,12 +54,11 @@ export async function GET(req: NextRequest) {
     }
 
     const token = auth.replace("Bearer ", "");
-    let decoded:any;
-    decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
     await connectToDatabase();
 
     // validation
-    if (!Types.ObjectId.isValid(decoded.userId)) {  
+    if (!Types.ObjectId.isValid(decoded.userId)) {
       return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
     }
 

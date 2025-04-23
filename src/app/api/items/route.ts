@@ -1,13 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/utils/mongodb";
 import Item from "@/models/Item";
 import User from "@/models/User";
-import jwt from "jsonwebtoken";
+import authorize from "@/utils/authorize";
 
 /*
-CREATE ALL ITEMS HANDLER AT "api/items"
+create a new items at "api/items"
 */
+export async function POST(req: NextRequest) {
+  try {
+    const { userId } = await authorize(req);
+    const userWithRole = await User.findById(userId).select("role");
 
+    if (userWithRole.role !== "donor") {
+      throw { status: 403, message: "Access denied" };
+    }
+    await connectToDatabase();
+
+    // Parse the request body
+    const body = await req.json();
+    if (!body) {
+      return NextResponse.json({ error: "Request body is required" }, { status: 400 });
+    }
+
+    if (!body.title || !body.description || !body.quantity || !body.category || !body.condition) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    if (body.quantity <= 0) {
+      return NextResponse.json({ error: "Quantity must be greater than 0" }, { status: 400 });
+    }
+
+    const item = await Item.create({ ...body, donor: userId });
+
+    return NextResponse.json(item, { status: 201 });
+  } catch (error: any) {
+    console.error(error);
+    const status = error.status || 500;
+    const message = error.message || "Internal Server Error";
+    return NextResponse.json({ error: message }, { status });
+  }
+}
+
+/*
+get all the items by any user with a filter at "api/items"
+*/
 export async function GET(req: NextRequest) {
   await connectToDatabase();
   const { searchParams } = new URL(req.url);
@@ -43,57 +80,5 @@ export async function GET(req: NextRequest) {
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Failed to fetch items" }, { status: 500 });
-  }
-}
-
-/*
-ASYNC AUTH FUNCTION (WILL LATER MAKE IT A MIDDLEWARE BUT FOR NOW IT WORKS)
-*/
-
-async function authorize(req: NextRequest) {
-  const auth = req.headers.get("Authorization") || "";
-  if (!auth.startsWith("Bearer ")) {
-    const error = new Error("Unauthorized");
-    (error as any).status = 401;
-    throw error;
-  }
-  const token = auth.replace("Bearer ", "");
-  let decoded: any;
-  try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET!);
-  } catch {
-    throw { status: 403, message: "Invalid token" };
-  }
-
-  await connectToDatabase();
-  const user = await User.findById(decoded.userId);
-  if (!user) {
-    throw { status: 404, message: "User not found" };
-  }
-  return { user, userId: decoded.userId };
-}
-
-/*
-CREATE A NEW ITEM HANDLER AT "api/items"
-*/
-
-export async function POST(req: NextRequest) {
-  try {
-    const { user, userId } = await authorize(req);
-    const allowedRoles = ["donor", "admin", "superadmin"];
-    if (!allowedRoles.includes(user.role)) {
-      return NextResponse.json({ error: "Permission denied" }, { status: 403 });
-    }
-    const body = await req.json();
-    if (!body.title || !body.description || !body.quantity || !body.category || !body.condition) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-    const item = await Item.create({ ...body, donor: userId });
-    return NextResponse.json(item, { status: 201 });
-  } catch (error: any) {
-    console.error(error);
-    const status = error.status || 500;
-    const message = error.message || "Internal Server Error";
-    return NextResponse.json({ error: message }, { status });
   }
 }

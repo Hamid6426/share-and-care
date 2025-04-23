@@ -1,15 +1,10 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
-import { IUser } from "./User";
 
 export interface IChat extends Document {
   chatId: string;
   participants: string[];
   createdAt: Date;
   updatedAt: Date;
-}
-
-function generateChatId(user1Id: string, user2Id: string): string {
-  return [user1Id, user2Id].sort().join("_");
 }
 
 const ChatSchema: Schema<IChat> = new Schema(

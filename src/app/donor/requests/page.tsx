@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import axiosInstance from "@/utils/axiosInstance";
 
 interface Item {
