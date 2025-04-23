@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
+import StartChatButton from "@/components/StartAChatButton";
 
 // Function to format the date to MM-DD-YYYY
 const formatDate = (date: string | null) => {
@@ -15,7 +16,7 @@ const formatDate = (date: string | null) => {
 };
 
 const PublicProfile = () => {
-  const { receiverId } = useParams() as { receiverId: string };
+  const { userProfileById } = useParams() as { userProfileById: string };
 
   const { currentUser, isUserLoading } = useAuth();
   const [isChatOpen, setIsChatOpen] = useState(false); // State to manage the chat modal
@@ -42,8 +43,10 @@ const PublicProfile = () => {
 
   return (
     <div className="max-w-sm mx-auto">
-      <h1 className="text-2xl font-bold my-6 text-green-800 ">User Profile</h1>
-
+      <div className="w-full flex items-center justify-between">
+        <h1 className="text-2xl font-bold my-6 text-green-800 ">User Profile</h1>
+        {currentUser._id !== userProfileById && <StartChatButton userId={userProfileById} />}
+      </div>
       {/* Profile Picture */}
       <div>
         <div className="mb-4">

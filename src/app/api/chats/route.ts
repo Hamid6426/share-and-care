@@ -1,77 +1,75 @@
-// app/api/chats/[chatId]/route.ts
-/*
-POST /api/chats
-  • parse { senderId, receiverId }
-  • validate inputs & ensure no duplicate thread
-  • create Chat record (chatId can be a deterministic composite of two IDs)
-  • return { chatId, participants }
-
-GET /api/chats
-  • get current user from session
-  • find Chat documents where user is sender or receiver
-  • return list of chat summaries
-*/
-
-import { NextResponse } from "next/server";
+// app/api/chats/route.ts
+import { NextResponse, NextRequest } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Chat from "@/models/Chat";
-import { getServerSession } from "next-auth/next";
+import jwt from "jsonwebtoken";
+import User from "@/models/User";
+import { Types } from "mongoose";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { chatId: string } }
-) {
-  await connectToDatabase();
-  const { chatId } = params;
-  const session = await getServerSession();
-  const userId = session?.user?.id;
+// CHAT STARTER
+export async function POST(req: Request) {
+  try {
+    await connectToDatabase();
+    const body = await req.json();
+    const { senderId, receiverId } = body;
 
-  // 1. Validate & authorize
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const isParticipant = await Chat.exists({
-    chatId,
-    $or: [{ messageSenderId: userId }, { messageReceiverId: userId }]
-  });
-  if (!isParticipant) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (!senderId || !receiverId) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
 
-  // 2. Fetch and return messages
-  const messages = await Chat.find({ chatId })
-    .sort({ createdAt: 1 })
-    .limit(100)
-    .populate(["messageSenderId", "messageReceiverId"]);
-  return NextResponse.json(messages);
+    if (!Types.ObjectId.isValid(senderId) || !Types.ObjectId.isValid(receiverId)) {
+      return NextResponse.json({ error: "Invalid user IDs" }, { status: 400 });
+    }
+
+    if (senderId === receiverId) {
+      return NextResponse.json({ error: "Cannot start chat with self" }, { status: 400 });
+    }    
+
+    const chatId = [senderId, receiverId].sort().join("_"); // same chatId for both users
+
+    let chat = await Chat.findOne({ chatId });
+
+    if (!chat) {
+      chat = await Chat.create({
+        chatId,
+        participants: [senderId, receiverId],
+      });
+    }
+
+    return NextResponse.json(chat, { status: 200 });
+  } catch (error) {
+    console.error("Chat Start Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: { chatId: string } }
-) {
-  await connectToDatabase();
-  const { chatId } = params;
-  const session = await getServerSession();
-  const userId = session?.user?.id;
-  const { message } = await request.json();
+// CHAT LIST
+export async function GET(req: NextRequest) {
+  try {
+    const auth = req.headers.get("Authorization") || "";
 
-  // 1. Auth & validate participant
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const isParticipant = await Chat.exists({
-    chatId,
-    $or: [{ messageSenderId: userId }, { messageReceiverId: userId }]
-  });
-  if (!isParticipant) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (!auth.startsWith("Bearer ")) {
+      const error = new Error("Unauthorized");
+      (error as any).status = 401;
+      throw error;
+    }
 
-  // 2. Validate message
-  if (!message?.trim() || message.length > 500) {
-    return NextResponse.json({ error: "Invalid message" }, { status: 400 });
+    const token = auth.replace("Bearer ", "");
+    let decoded:any;
+    decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    await connectToDatabase();
+
+    // validation
+    if (!Types.ObjectId.isValid(decoded.userId)) {  
+      return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
+    }
+
+    // chats of this participant
+    const chats = await Chat.find({ participants: decoded.userId }).sort({ updatedAt: -1 });
+
+    return NextResponse.json(chats, { status: 200 });
+  } catch (error) {
+    console.error("Get Chats Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
-
-  // 3. Save and populate
-  const doc = await Chat.create({
-    messageSenderId: userId,
-    messageReceiverId: /* derive the other party’s ID */,
-    message: message.trim(),
-    chatId
-  });
-  const populated = await doc.populate(["messageSenderId", "messageReceiverId"]);
-  return NextResponse.json(populated, { status: 201 });
 }

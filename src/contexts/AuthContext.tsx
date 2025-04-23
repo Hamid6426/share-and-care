@@ -42,6 +42,7 @@ interface AuthContextType {
   // you can still expose these if you need them:
   setCurrentUser: React.Dispatch<React.SetStateAction<AuthenticatedUser | null>>;
   loadUserProfile: () => Promise<void>;
+  token: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -49,6 +50,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<AuthenticatedUser | null>(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
 
   // Prevent multiple fetches
   const hasFetchedProfile = useRef(false);
@@ -59,6 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!token) {
       setCurrentUser(null);
       setIsUserLoading(false);
+      setToken(localStorage.getItem("token"));
       return;
     }
 
@@ -85,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  return <AuthContext.Provider value={{ currentUser, setCurrentUser, loadUserProfile, isUserLoading }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ currentUser, setCurrentUser, loadUserProfile, isUserLoading, token }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

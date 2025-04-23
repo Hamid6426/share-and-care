@@ -9,10 +9,18 @@ export interface IItem extends Document {
   images: string[];
   quantity: number;
   donor: IUser; // populated user object with donor details
-  receiver?: IUser; // populated receiver when he/she come to claim the item
-  status: "available" | "claimed" | "picked" | "donated";
+  receiver?: IUser | null; // populated receiver when he/she come to claim the item
+  status: "available" | "requested" | "claimed" | "picked" | "donated";
+  // available mean an item is available for donation
+  // claimed mean a user has claimed the item but not yet picked it up "it is confirmed by donor after request from receiver"
+  // picked mean a user has picked up the item
+  // donated mean the item is no longer available for donation
+  isRequested: boolean; // true if receiver has requested for the item
+  requestAccepted: boolean; // true if the request is accepted by the donor
+  requestCancelled: boolean; // true if the request is cancelled by the receiver
+  isCancelled: boolean; // true if the item is cancelled by the donor
   createdAt: Date;
-  updatedAt: Date; 
+  updatedAt: Date;
 }
 
 function validateImageLimit(val: string[]): boolean {
@@ -36,9 +44,13 @@ const ItemSchema: Schema<IItem> = new Schema(
     receiver: { type: Schema.Types.ObjectId, ref: "User", default: null },
     status: {
       type: String,
-      enum: ["available", "claimed", "picked", "donated"],
+      enum: ["available", "requested", "claimed", "picked", "donated"],
       default: "available",
     },
+    isRequested: { type: Boolean, default: false },
+    requestAccepted: { type: Boolean, default: false },
+    requestCancelled: { type: Boolean, default: false },
+    isCancelled: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

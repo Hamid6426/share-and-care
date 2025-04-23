@@ -1,44 +1,30 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { IUser } from "./User";
 
 export interface IChat extends Document {
-  messageSenderId: IUser;
-  messageReceiverId: IUser;
-  message: string;
   chatId: string;
+  participants: string[];
   createdAt: Date;
   updatedAt: Date;
 }
 
+function generateChatId(user1Id: string, user2Id: string): string {
+  return [user1Id, user2Id].sort().join("_");
+}
+
 const ChatSchema: Schema<IChat> = new Schema(
   {
-    messageSenderId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-      index: true, // Add index for better query performance
-    },
-    messageReceiverId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-      index: true,
-    },
-    message: {
-      type: String,
-      required: true,
-      trim: true, // Remove whitespace
-      maxlength: [500, "Message cannot be more than 500 characters"], // Add max length
-    },
     chatId: {
       type: String,
       required: true,
       index: true,
     },
+    participants: [{ type: Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,
-    // Add compound index for better querying of conversations
+    // Add compound index for better querying of conversations E.G. BUT NOT IN USE
+    // ChatSchema.index({ messageSenderId: 1, messageReceiverId: 1, createdAt: -1 });
   }
 );
 ChatSchema.index({ chatId: 1, createdAt: 1 }); // instead of `indexes` array :contentReference[oaicite:3]{index=3}

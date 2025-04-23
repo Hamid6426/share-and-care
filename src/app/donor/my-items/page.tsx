@@ -13,15 +13,17 @@ interface Item {
   condition: string;
   images: string[];
   quantity: number;
-  status: string;
+  status: "available" | "requested" | "claimed" | "picked" | "donated"; // there are 5 conditions: available, requested, claimed, picked, and donated
   donor: {
+    _id: string;
     name: string;
     email: string;
   };
   receiver: {
+    _id: string;
     name: string;
     email: string;
-  };
+  } | null; // receiver details if the item is claimed
 }
 
 const MyItems = () => {

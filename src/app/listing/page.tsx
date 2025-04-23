@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Item {
   _id: string;
@@ -13,16 +14,18 @@ interface Item {
   condition: string;
   images: string[];
   quantity: number;
-  status: string; // there are 4 conditions: available, claimed, picked, and donated
+  status: "available" | "requested" | "claimed" | "picked" | "donated"; // there are 4 conditions: available, claimed, picked, and donated
+  isRequested: boolean;
   donor: {
     _id: string;
     name: string;
     email: string;
   };
   receiver: {
+    _id: string;
     name: string;
     email: string;
-  };
+  } | null;
 }
 
 const ItemListing = () => {
@@ -32,7 +35,7 @@ const ItemListing = () => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const { currentUser, isUserLoading } = useAuth();
   useEffect(() => {
     const fetchItems = async () => {
       setIsLoading(true);
@@ -62,11 +65,45 @@ const ItemListing = () => {
   };
 
   const statusInfo: Record<string, { color: string; message: string }> = {
-    available: { color: "bg-green-500 text-green-800", message: "This item is available for donation." },
-    claimed: { color: "bg-yellow-500 text-yellow-800", message: "This item has been claimed." },
-    picked: { color: "bg-blue-500 text-blue-800", message: "This item has been picked up." },
-    donated: { color: "bg-gray-500 text-gray-800", message: "This item has been donated." },
+    available: { color: "bg-green-500 text-white", message: "This item is available for donation." },
+    requested: { color: "bg-green-500 text-white", message: "This item is available for donation." },
+    claimed: { color: "bg-yellow-500 text-white", message: "This item has been claimed." },
+    picked: { color: "bg-blue-500 text-white", message: "This item has been picked up." },
+    donated: { color: "bg-gray-500 text-white", message: "This item has been donated." },
   };
+
+  const handleRequest = async (itemId: string) => {
+    if (!currentUser) {
+      toast.error("You must be logged in as a receiver to request items.");
+      return;
+    }
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(`/api/items/${itemId}/request`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success("Request sent!");
+      setItems((prev) =>
+        prev.map((item) =>
+          item._id === itemId
+            ? {
+                ...item,
+                isRequested: true,
+                status: "requested", // its would still be green until a request is accepted
+                receiver: {
+                  _id: currentUser._id,
+                  name: currentUser.name,
+                  email: currentUser.email,
+                },
+              }
+            : item
+        )
+      );
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.response?.data?.error || "Failed to send request");
+    }
+  };
+
+  if (isLoading || isUserLoading) return <p className="text-center">Loading...</p>;
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow">
@@ -101,10 +138,24 @@ const ItemListing = () => {
                           </span>
                         </div>
                       </div>
-                      <p className="text-gray-700 my-2 text-sm h-10">{item.description.length > 90 ? item.description.slice(0, 90) + "..." : item.description}</p>
-                      <Link href={item.donor._id} className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition duration-200 font-bold">
-                        Contact {item.donor.name}
-                      </Link>
+                      <p className="text-gray-700 my-2 text-sm h-10">{item.description.length > 70 ? item.description.slice(0, 70) + "..." : item.description}</p>
+
+                      <div className="w-full flex justify-between">
+                        {/* ←— REQUEST BUTTON */}
+                        {currentUser?.role === "receiver" && item.status === "available" && !item.isRequested && (
+                          <button
+                            onClick={() => handleRequest(item._id)}
+                            className="w-full max-w-30 text-sm cursor-pointer bg-green-500 hover:bg-green-600 text-white py-2 rounded  transition duration-200 font-bold"
+                          >
+                            Request Item
+                          </button>
+                        )}
+
+                        <Link href={item.donor._id} className="mx-auto w-full max-w-30 text-center text-sm bg-green-500 text-white py-2 rounded hover:bg-green-600 transition duration-200 font-bold">
+                          Contact
+                          {/* {item.donor.name} */}
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 );

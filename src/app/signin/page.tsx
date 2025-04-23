@@ -31,7 +31,7 @@ const Signin: React.FC = () => {
       await loadUserProfile();
       toast.success("Login successful!");
 
-      router.push("/");
+      router.push("/listing");
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Failed to login.");
     } finally {
