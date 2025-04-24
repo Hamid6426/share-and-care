@@ -1,6 +1,6 @@
+// src/app/unauthorized/page.tsx
 import Link from "next/link";
 
-// app/unauthorized/page.tsx
 export default function Unauthorized() {
   return (
     <div className="absolute top-0 w-full h-screen flex flex-col gap-3 items-center justify-center bg-green-50 font-bold">

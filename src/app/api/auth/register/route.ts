@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     await newUser.save();
 
     // Build the email HTML
-    const verificationLink = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email?verificationToken=${verificationToken}`;
+    const verificationLink = `${process.env.NEXT_PUBLIC_API_BASE_URL}/verify-email?verificationToken=${verificationToken}`;
     const emailHtml = `
     <h1>Email Verification</h1>
     <p>Click the link below to verify your email:</p>

@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const VerifyEmail = () => {
   const router = useRouter();
@@ -34,18 +35,19 @@ const VerifyEmail = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-green-300 px-4">
       <div className="w-full max-w-md bg-green-100 shadow-lg rounded-lg p-8 text-center">
-        <h2 className="text-2xl font-bold text-green-700 mb-6">Verify Your Email</h2>
+        <h2 className="text-2xl font-bold text-green-700 mb-4">Verify Your Email</h2>
         <p className="text-green-800 mb-4">
           Click the button below to verify your email.
         </p>
         <button
           onClick={handleVerify}
           disabled={isLoading || !verificationToken}
-          className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md transition duration-200"
+          className="w-full cursor-pointer bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md transition duration-200"
         >
           {isLoading ? "Verifying..." : "Verify Email"}
         </button>
       </div>
+    
     </div>
   );
 };
