@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const Signup: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -74,6 +75,14 @@ const Signup: React.FC = () => {
             {isLoading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
+        <div className="flex justify-center my-4">
+          <div className="font-bold text-green-600">OR</div>
+        </div>
+        <div className="flex">
+          <Link href="/signin" className="text-center border-green-500 border text-green-500 hover:text-green-600 font-medium py-2 px-4 rounded-md transition duration-200 w-full">
+            Sign in
+          </Link>
+        </div>
       </div>
     </div>
   );

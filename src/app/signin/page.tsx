@@ -5,6 +5,7 @@ import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 
 const Signin: React.FC = () => {
   const router = useRouter();
@@ -78,6 +79,12 @@ const Signin: React.FC = () => {
             {isLoading ? "Signing In..." : "Sign In"}
           </button>
         </form>
+        <div className="flex justify-center my-4">
+          <div className="font-bold text-green-600">OR</div>
+        </div>
+        <div className="flex">
+        <Link href="/signup" className="text-center border-green-500 border text-green-500 hover:text-green-600 font-medium py-2 px-4 rounded-md transition duration-200 w-full">Create Account</Link>
+        </div>
       </div>
     </div>
   );
