@@ -1,20 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import axiosInstance from "@/utils/axiosInstance";
 
 interface Item {
   _id: string;
   title: string;
   description: string;
-  category: string;
-  condition: string;
-  images: string[];
   quantity: number;
-  status: "available" | "requested" | "claimed" | "picked" | "donated"; // there are 4 conditions: available, claimed, picked, and donated
+  images: string[];
+  status: "inactive" | "available" | "requested" | "claimed" | "picked" | "donated"; // there are 4 conditions: available, claimed, picked, and donated
   isRequested: boolean;
   donor: {
     _id: string;
@@ -40,7 +38,7 @@ const ItemListing = () => {
     const fetchItems = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("/api/items", {
+        const response = await axiosInstance.get("/api/items", {
           params: {
             page: currentPage,
             limit: 12,
@@ -79,7 +77,7 @@ const ItemListing = () => {
     }
     const token = localStorage.getItem("token");
     try {
-      await axios.post(`/api/items/${itemId}/request`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      await axiosInstance.post(`/api/items/${itemId}/request`, {}, { headers: { Authorization: `Bearer ${token}` } });
       toast.success("Request sent!");
       setItems((prev) =>
         prev.map((item) =>
@@ -121,42 +119,27 @@ const ItemListing = () => {
                 const status = statusInfo[item.status] || statusInfo["available"];
                 return (
                   <div key={item._id} className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                    {item.images.length > 0 ? (
-                      <Image src={item.images[0]} alt={item.title} width={240} height={180} className="w-full object-fill rounded-t-lg aspect-[4/3]" />
-                    ) : (
-                      <div className="w-full flex items-center justify-center bg-gray-200 text-4xl font-bold text-gray-600 rounded-t-lg  aspect-[4/3]">{item.title.charAt(0).toUpperCase()}</div>
-                    )}
-                    <div className="p-3 border-t border-gray-200">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-gray-800">
-                          {item.title} ({item.quantity}x)
-                        </h3>
-                        <div className="group relative flex">
-                          <div className={`px-3 py-3 text-xs font-semibold rounded-full ${status.color}`}></div>
-                          <span className="absolute bottom-full right-full scale-0 translate-x-4 -translate-y-4 transition-all rounded bg-gray-800 p-2 text-xs text-white group-hover:scale-100 whitespace-nowrap">
-                            {status.message}
-                          </span>
+                    <Link className="item._id" href={`/listing/${item._id}`}>
+                      {item.images.length > 0 ? (
+                        <Image src={item.images[0]} alt={item.title} width={240} height={180} className="w-full object-fill rounded-t-lg aspect-[4/3]" />
+                      ) : (
+                        <div className="w-full flex items-center justify-center bg-gray-200 text-4xl font-bold text-gray-600 rounded-t-lg  aspect-[4/3]">{item.title.charAt(0).toUpperCase()}</div>
+                      )}
+                      <div className="p-3 border-t border-gray-200">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold text-gray-800">
+                            {item.title} ({item.quantity}x)
+                          </h3>
+                          <div className="group relative flex">
+                            <div className={`px-3 py-3 text-xs font-semibold rounded-full ${status.color}`}></div>
+                            <span className="absolute bottom-full right-full scale-0 translate-x-4 -translate-y-4 transition-all rounded bg-gray-800 p-2 text-xs text-white group-hover:scale-100 whitespace-nowrap">
+                              {status.message}
+                            </span>
+                          </div>
                         </div>
+                        <p className="text-gray-700 mt-2 text-sm h-10">{item.description.length > 70 ? item.description.slice(0, 70) + "..." : item.description}</p>
                       </div>
-                      <p className="text-gray-700 my-2 text-sm h-10">{item.description.length > 70 ? item.description.slice(0, 70) + "..." : item.description}</p>
-
-                      <div className="w-full flex justify-between">
-                        {/* ←— REQUEST BUTTON */}
-                        {currentUser?.role === "receiver" && item.status === "available" && !item.isRequested && (
-                          <button
-                            onClick={() => handleRequest(item._id)}
-                            className="w-full max-w-30 text-sm cursor-pointer bg-green-500 hover:bg-green-600 text-white py-2 rounded  transition duration-200 font-bold"
-                          >
-                            Request Item
-                          </button>
-                        )}
-
-                        <Link href={item.donor._id} className="mx-auto w-full max-w-30 text-center text-sm bg-green-500 text-white py-2 rounded hover:bg-green-600 transition duration-200 font-bold">
-                          Contact
-                          {/* {item.donor.name} */}
-                        </Link>
-                      </div>
-                    </div>
+                    </Link>
                   </div>
                 );
               })}

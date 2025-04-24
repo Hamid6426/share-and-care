@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
     const items = await Item.find(filter).skip(skip).limit(limit).populate("donor", "name email").populate("receiver", "name email");
 
     // Get the total count of items for pagination
-    const totalItems = await Item.countDocuments(filter);
+      const totalItems = await Item.countDocuments(filter);
 
     return NextResponse.json(
       {

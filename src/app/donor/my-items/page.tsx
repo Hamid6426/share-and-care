@@ -35,10 +35,13 @@ const MyItems = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const fetchItems = async (page = 1, status?: string, category?: string) => {
       setIsLoading(true);
       try {
-        const response = await axiosInstance.get("/api/items/my-items", {
+        const params = new URLSearchParams({ page: page.toString(), limit: "12" });
+        if (status) params.append("status", status);
+        if (category) params.append("category", category);
+        const response = await axiosInstance.get("/api/items/donor/listed-items", {
           params: {
             page: currentPage,
             limit: 12,
@@ -78,7 +81,7 @@ const MyItems = () => {
               <p className="text-center text-gray-500">No items found.</p>
             ) : (
               items.map((item) => (
-                <div key={item._id} className="border p-4 rounded-lg shadow-sm">
+                <div key={item._id} className="border h-fit p-4 rounded-lg shadow-sm">
                   <h3 className="text-xl font-semibold">{item.title}</h3>
                   <p className="text-sm text-gray-500">
                     {item.category} - {item.status}
@@ -95,8 +98,14 @@ const MyItems = () => {
                   <p className="mt-2 text-sm">
                     <strong>Quantity:</strong> {item.quantity}
                   </p>
-                  <Link href={`/donor/my-items/${item._id}`}>Preview Item</Link>
-                  <Link href={`/donor/my-items/${item._id}/edit`}>Edit Item</Link>
+                  <div className="flex mt-2 gap-3">
+                  <Link href={`/donor/my-items/${item._id}`} className="px-4 py-2 bg-green-600 text-white rounded ">
+                    Preview Item
+                  </Link>
+                  <Link href={`/donor/my-items/${item._id}/edit`} className="px-4 py-2 bg-green-600 text-white rounded ">
+                    Edit Item
+                  </Link>
+                  </div>
 
                   {item.images.length > 0 && (
                     <div className="mt-2">

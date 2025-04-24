@@ -3,30 +3,13 @@ import connectToDatabase from "@/utils/mongodb";
 import User from "@/models/User";
 import authorize from "@/utils/authorize";
 
-export async function GET(req: NextRequest) {
+export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   try {
-    // Connect to the database
+    const { userId } = await params;
     await connectToDatabase();
 
-    // Authorize the user making the request
-    const { userId } = await authorize(req);
-    const userWithRole = await User.findById(userId).select("role");
-
-    // Check if the user has the required permissions
-    if (!userWithRole || (userWithRole.role !== "admin" && userWithRole.role !== "superadmin")) {
-      return NextResponse.json({ error: "Permission denied" }, { status: 403 });
-    }
-
-    // Parse the request body
-    const body = await req.json();
-    if (!body || !body.userId) {
-      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
-    }
-
-    const targetUserId = body.userId;
-
     // Fetch the target user from the database
-    const user = await User.findById(targetUserId).select("-password");
+    const user = await User.findById(userId).select("-password");
 
     // Handle case where the user is not found
     if (!user) {
@@ -129,4 +112,3 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "An unexpected error occurred" }, { status: 500 });
   }
 }
-

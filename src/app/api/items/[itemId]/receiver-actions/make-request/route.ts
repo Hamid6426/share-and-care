@@ -1,34 +1,36 @@
-// /api/items/[itemId]/request/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 import connectToDatabase from "@/utils/mongodb";
 import jwt from "jsonwebtoken";
 import Item from "@/models/Item";
 import User from "@/models/User";
+import authorize from "@/utils/authorize";
 
 export async function POST(req: NextRequest, { params }: { params: { itemId: string } }) {
   try {
-    const auth = req.headers.get("Authorization") || "";
-    if (!auth.startsWith("Bearer ")) throw { status: 401, message: "Unauthorized" };
+    const { userId } = await authorize(req);
+    const userWithRole = await User.findById(userId).select("role");
 
-    const token = auth.replace("Bearer ", "");
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-    const userId = decoded.userId;
+    if (userWithRole.role !== "receiver") {
+      throw { status: 403, message: "Access denied" };
+    }
 
     await connectToDatabase();
 
-    const user = await User.findById(userId);
-    if (!user) throw { status: 404, message: "User not found" };
-
-    if (user.role !== "receiver") {
-      throw { status: 403, message: "Only receivers can request items" };
-    }
-
-    const itemId = params.itemId;
-
+    const { itemId } = await params;
     const item = await Item.findById(itemId);
     if (!item) throw { status: 404, message: "Item not found" };
 
+    if (item.status !== "available") {
+      throw { status: 400, message: "Item is not available for request" };
+    }
+
     if (item.isRequested) throw { status: 400, message: "Item already requested" };
+
+    // Add the user to the requesters array
+    if (!item.requesters.includes(userId)) {
+      item.requesters.push(userId);
+    }
 
     item.receiver = userId;
     item.status = "requested";

@@ -13,7 +13,8 @@ export interface IItem extends Document {
   receiver?: IUser | null; // populated when someone claims the item
   requesters: IUser[]; // populated list of users who have requested
 
-  status: "available" | "requested" | "claimed" | "picked" | "donated";
+  status: "inactive" | "available" | "requested" | "claimed" | "picked" | "donated";
+  // inactive, when the donor change his mind about donating. simply a soft delete
   // available mean an item is available for donation
   // requested mean a user has requested for the item "it is not confirmed by donor yet"
   // claimed mean the item is claimed by the receiver "it is not picked up yet"
@@ -69,7 +70,7 @@ const ItemSchema: Schema<IItem> = new Schema(
 
     status: {
       type: String,
-      enum: ["available", "requested", "claimed", "picked", "donated"],
+      enum: ["inactive", "available", "requested", "claimed", "picked", "donated"],
       default: "available",
     },
 
