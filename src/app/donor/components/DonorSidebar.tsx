@@ -5,6 +5,21 @@ import Link from "next/link";
 import React from "react";
 import { MdHome, MdDashboard, MdSettings, MdLogout, MdPerson, MdChat, MdListAlt, MdRequestPage } from "react-icons/md";
 import Tooltip from "@/components/Tooltips";
+import { toast } from "react-toastify";
+
+const logoutHandler = () => {
+  const token: any = localStorage.getItem("token");
+  if (token) {
+    console.log("Token is available")
+  }
+  try {
+    const removeToken: any = localStorage.getItem("token");
+    return removeToken;
+    toast.success("Token Removed")
+  } catch {
+    toast.error("Token removal failed")
+  }
+}
 
 export default function DonorSidebar() {
   return (
@@ -49,7 +64,7 @@ export default function DonorSidebar() {
         </Tooltip>
       </div>
       <Tooltip message="Logout">
-        <button>
+        <button onClick={logoutHandler}>
           <MdLogout className="hover:text-green-600" />
         </button>
       </Tooltip>
