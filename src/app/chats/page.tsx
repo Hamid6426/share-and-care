@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import axiosInstance from "@/utils/axiosInstance"; // Make sure path is correct
 
 interface IChat {
   _id: string;
@@ -19,28 +20,14 @@ export default function MyChats() {
 
   useEffect(() => {
     const fetchChats = async () => {
-      const token = localStorage.getItem("token"); // ✅ Get token from localStorage manually
-
-      if (!token || !currentUser?._id) return;
+      if (!currentUser?._id) return;
 
       try {
-        const res = await fetch("/api/chats", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || "Failed to fetch chats");
-        }
-
+        const { data } = await axiosInstance.get("/api/chats");
         setChats(data);
       } catch (err: any) {
         console.error(err);
-        toast.error(err.message || "Something went wrong");
+        toast.error(err.response?.data?.error || err.message || "Failed to fetch chats");
       } finally {
         setLoading(false);
       }
@@ -52,7 +39,6 @@ export default function MyChats() {
   }, [isUserLoading, currentUser]);
 
   if (isUserLoading || loading) return <p>Loading chats...</p>;
-
   if (!chats.length) return <p>No chats yet.</p>;
 
   return (

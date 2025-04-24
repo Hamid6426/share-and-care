@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react"; // <- include useCallback
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
+import axiosInstance from "@/utils/axiosInstance"; // ✅ Import your axios instance
 
 interface IMessage {
   _id: string;
@@ -23,55 +24,43 @@ export default function ChatRoom() {
 
   const fetchMessages = useCallback(async () => {
     try {
-      const res = await fetch(`/api/messages?chatId=${chatId}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to fetch messages");
-  
+      const { data } = await axiosInstance.get(`/api/messages`, {
+        params: { chatId },
+      });
       setMessages(data);
     } catch (err: any) {
       console.error(err);
-      toast.error(err.message || "Could not load chat");
+      toast.error(err.response?.data?.error || err.message || "Could not load chat");
     } finally {
       setLoading(false);
     }
-  }, [chatId]); // <- dependency array for useCallback
-  
-  // Add this useEffect for periodic fetching
+  }, [chatId]);
+
   useEffect(() => {
     if (!isUserLoading && currentUser) {
       fetchMessages();
       const intervalId = setInterval(fetchMessages, 10000);
       return () => clearInterval(intervalId);
     }
-  }, [chatId, isUserLoading, currentUser, fetchMessages]); // <- safe now
-  
+  }, [chatId, isUserLoading, currentUser, fetchMessages]);
 
   const handleSendMessage = async () => {
-    const token = localStorage.getItem("token");
-    if (!token || !messageText.trim()) return;
+    if (!messageText.trim()) return;
 
     try {
-      const res = await fetch("/api/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ chatId, text: messageText }),
+      const { data } = await axiosInstance.post("/api/messages", {
+        chatId,
+        text: messageText,
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to send message");
 
       setMessages((prev) => [...prev, data]);
       setMessageText("");
     } catch (err: any) {
-      toast.error(err.message || "Message failed");
+      toast.error(err.response?.data?.error || err.message || "Message failed");
     }
   };
 
   useEffect(() => {
-    // Scroll to bottom on new message
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
