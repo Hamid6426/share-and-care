@@ -20,34 +20,30 @@ export async function POST(req: NextRequest, { params }: { params: { itemId: str
     if (!item) throw { status: 404, message: "Item not found" };
 
     if (item.donor.toString() !== decoded.userId) {
-      throw { status: 403, message: "Only the donor can accept the request" };
+      throw { status: 403, message: "Only the donor can cancel the request" };
     }
 
     if (!item.isRequested || !item.receiver) {
-      throw { status: 400, message: "No pending request to accept" };
+      throw { status: 400, message: "No pending request to cancel" };
     }
 
-    if (item.status === "claimed" || item.requestAccepted) {
-      throw { status: 400, message: "This request has already been accepted" };
-    }
+    // Update the item: cancel the request
+    item.requestCancelled = true;
+    item.isCancelled = true;
+    item.status = "available"; // Reset the status to available
 
-    item.requestAccepted = true;
-    item.isAccepted = true;
-    item.isClaimed = true;
-    item.status = "claimed";
+    item.isRequested = false; // No more pending request
+    item.requestAccepted = false;
+    item.isAccepted = false;
+    item.isClaimed = false;
 
-    item.isRequested = false;
-    item.isCancelled = false;
-    item.isPicked = false;
-    item.isDonated = false;
-    item.requestCancelled = false;
+    item.receiver = null; // Reset receiver field
+    item.requesters = item.requesters.filter((id) => id.toString() !== item.receiver?.toString());
 
     await item.save();
 
-    const updatedItem = await Item.findById(item._id).populate("donor", "name email").populate("receiver", "name email");
-
-    return NextResponse.json({ message: "Request accepted", item: updatedItem });
+    return NextResponse.json({ message: "Request cancelled", item });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || "Failed to accept request" }, { status: err.status || 500 });
+    return NextResponse.json({ error: err.message || "Failed to cancel request" }, { status: err.status || 500 });
   }
 }

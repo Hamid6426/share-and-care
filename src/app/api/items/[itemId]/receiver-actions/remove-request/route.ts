@@ -1,4 +1,4 @@
-// src/app/api/items/[itemId]/receiver-actions/make-request/route.ts
+// src/app/api/items/[itemId]/receiver-actions/remove-request/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
@@ -25,37 +25,36 @@ export async function POST(
     const item = await Item.findById(params.itemId);
     if (!item) throw { status: 404, message: "Item not found" };
 
-    // 3. Validate state
-    if (item.donor.toString() === userId) {
-      throw { status: 400, message: "Donor cannot request their own item" };
-    }
-    if (item.isRequested || item.status !== "available") {
-      throw { status: 400, message: "Item is not available for request" };
+    if (item.receiver?.toString() !== userId || !item.isRequested) {
+      throw { status: 400, message: "No active request to remove" };
     }
 
-    // 4. Apply request
-    item.receiver          = userId;
-    item.requesters.push(userId);
-    item.isRequested       = true;
-    item.requestCancelled  = false;
-    item.requestAccepted   = false;
-    item.isAccepted        = false;
-    item.status            = "requested";
+    // 3. Revert request
+    item.requestCancelled = true;
+    item.isRequested      = false;
+    item.requestAccepted  = false;
+    item.isAccepted       = false;
+    item.status           = "available";
+
+    item.receiver   = null;
+    item.requesters = item.requesters.filter(
+      (rid) => rid.toString() !== userId
+    );
 
     await item.save();
 
-    // 5. Save & return
-    const updated = await Item.findById(item._id)
-      .populate("donor", "name email")
-      .populate("receiver", "name email");
-
+    // 4. Return
+    const updated = await Item.findById(item._id).populate(
+      "donor",
+      "name email"
+    );
     return NextResponse.json(
-      { message: "Request submitted", item: updated },
+      { message: "Request removed", item: updated },
       { status: 200 }
     );
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || "Failed to make request" },
+      { error: err.message || "Failed to remove request" },
       { status: err.status || 500 }
     );
   }

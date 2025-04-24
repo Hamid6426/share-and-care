@@ -1,4 +1,4 @@
-// src/app/api/items/donor/requested-items/route.ts
+// src/app/api/items/donor/items-by-status/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import connectToDatabase from "@/utils/mongodb";
@@ -12,12 +12,18 @@ export async function GET(req: NextRequest) {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
     const userId = decoded.userId;
 
+    const status = req.nextUrl.searchParams.get("status");
+
     await connectToDatabase();
     const user = await User.findById(userId);
     if (!user) throw { status: 404, message: "User not found" };
 
-    // Only those the donor has requests on
-    const items = await Item.find({ donor: userId, status: "requested" })
+    const query: any = { donor: userId };
+    if (status) {
+      query.status = status;
+    }
+
+    const items = await Item.find(query)
       .populate("donor", "name email")
       .populate("receiver", "name email");
 

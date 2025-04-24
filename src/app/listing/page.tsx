@@ -33,6 +33,7 @@ const ItemListing = () => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { currentUser, isUserLoading } = useAuth();
   useEffect(() => {
     const fetchItems = async () => {
@@ -70,36 +71,36 @@ const ItemListing = () => {
     donated: { color: "bg-gray-500 text-white", message: "This item has been donated." },
   };
 
-  const handleRequest = async (itemId: string) => {
-    if (!currentUser) {
-      toast.error("You must be logged in as a receiver to request items.");
-      return;
-    }
-    const token = localStorage.getItem("token");
-    try {
-      await axiosInstance.post(`/api/items/${itemId}/request`, {}, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success("Request sent!");
-      setItems((prev) =>
-        prev.map((item) =>
-          item._id === itemId
-            ? {
-                ...item,
-                isRequested: true,
-                status: "requested", // its would still be green until a request is accepted
-                receiver: {
-                  _id: currentUser._id,
-                  name: currentUser.name,
-                  email: currentUser.email,
-                },
-              }
-            : item
-        )
-      );
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.response?.data?.error || "Failed to send request");
-    }
-  };
+  // const handleRequest = async (itemId: string) => {
+  //   if (!currentUser) {
+  //     toast.error("You must be logged in as a receiver to request items.");
+  //     return;
+  //   }
+  //   const token = localStorage.getItem("token");
+  //   try {
+  //     await axiosInstance.post(`/api/items/${itemId}/request`, {}, { headers: { Authorization: `Bearer ${token}` } });
+  //     toast.success("Request sent!");
+  //     setItems((prev) =>
+  //       prev.map((item) =>
+  //         item._id === itemId
+  //           ? {
+  //               ...item,
+  //               isRequested: true,
+  //               status: "requested", // its would still be green until a request is accepted
+  //               receiver: {
+  //                 _id: currentUser._id,
+  //                 name: currentUser.name,
+  //                 email: currentUser.email,
+  //               },
+  //             }
+  //           : item
+  //       )
+  //     );
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     toast.error(err.response?.data?.error || "Failed to send request");
+  //   }
+  // };
 
   if (isLoading || isUserLoading) return <p className="text-center">Loading...</p>;
 

@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import axiosInstance from "@/utils/axiosInstance";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 type Item = {
   _id: string;
@@ -68,8 +69,8 @@ const PublicItemDetails = () => {
     setRequestError("");
 
     try {
-      const res = await axiosInstance.post(`/api/items/${item._id}/receiver-actions/make-request`);
-      alert("Request sent successfully!");
+      await axiosInstance.post(`/api/items/${item._id}/receiver-actions/make-request`);
+      toast.success("Request sent successfully!");
       router.refresh(); // Refresh the page to reflect the updated item details
     } catch (err: any) {
       setRequestError(err.response?.data?.error || err.message || "Failed to send request");
@@ -117,9 +118,7 @@ const PublicItemDetails = () => {
           <button
             onClick={handleRequest}
             disabled={requesting || item.isRequested}
-            className={`py-2 px-4 mb-2 rounded text-white font-bold hover:bg-green-600 cursor-pointer ${
-              requesting || item.isRequested ? "bg-gray-400 cursor-not-allowed" : "bg-green-500"
-            }`}
+            className={`py-2 px-4 mb-2 rounded text-white font-bold hover:bg-green-600 cursor-pointer ${requesting || item.isRequested ? " disabled:bg-gray-500 cursor-not-allowed" : "bg-green-500"}`}
           >
             {requesting ? "Requesting..." : item.isRequested ? "Already Requested" : "Request Item"}
           </button>

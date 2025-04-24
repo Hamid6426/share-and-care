@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import React from "react";
-import { MdHome, MdDashboard, MdRequestPage, MdSettings, MdLogout, MdPerson, MdListAlt } from "react-icons/md";
+import { MdHome, MdDashboard, MdRequestPage, MdSettings, MdLogout, MdPerson, MdChat } from "react-icons/md";
 import Tooltip from "@/components/Tooltips";
 
 export default function ReceiverSidebar() {
@@ -22,14 +22,14 @@ export default function ReceiverSidebar() {
             <MdDashboard className="hover:text-green-600" />
           </Link>
         </Tooltip>
-        <Tooltip message="Item Listing">
-          <Link href="/receiver/item-listing">
-            <MdListAlt className="hover:text-green-600" />
+        <Tooltip message="My Requests">
+          <Link href="/receiver/my-requests">
+            <MdRequestPage className="hover:text-green-600" />
           </Link>
         </Tooltip>
-        <Tooltip message="Requests">
-          <Link href="/receiver/requests">
-            <MdRequestPage className="hover:text-green-600" />
+        <Tooltip message="Chats">
+          <Link href="/receiver/chats">
+            <MdChat className="hover:text-green-600" />
           </Link>
         </Tooltip>
         <Tooltip message="Profile">

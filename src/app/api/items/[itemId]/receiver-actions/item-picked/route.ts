@@ -1,4 +1,4 @@
-// src/app/api/items/[itemId]/receiver-actions/make-request/route.ts
+// src/app/api/items/[itemId]/receiver-actions/item-picked/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
@@ -25,37 +25,32 @@ export async function POST(
     const item = await Item.findById(params.itemId);
     if (!item) throw { status: 404, message: "Item not found" };
 
-    // 3. Validate state
-    if (item.donor.toString() === userId) {
-      throw { status: 400, message: "Donor cannot request their own item" };
+    if (item.receiver?.toString() !== userId) {
+      throw { status: 403, message: "Only the assigned receiver can pick up" };
     }
-    if (item.isRequested || item.status !== "available") {
-      throw { status: 400, message: "Item is not available for request" };
+    if (item.status !== "claimed" || !item.isAccepted) {
+      throw { status: 400, message: "Item must be claimed first" };
     }
 
-    // 4. Apply request
-    item.receiver          = userId;
-    item.requesters.push(userId);
-    item.isRequested       = true;
-    item.requestCancelled  = false;
-    item.requestAccepted   = false;
-    item.isAccepted        = false;
-    item.status            = "requested";
+    // 3. Complete donation
+    item.isPicked  = true;
+    item.isDonated = true;
+    item.status    = "donated";
 
     await item.save();
 
-    // 5. Save & return
+    // 4. Return
     const updated = await Item.findById(item._id)
       .populate("donor", "name email")
       .populate("receiver", "name email");
 
     return NextResponse.json(
-      { message: "Request submitted", item: updated },
+      { message: "Item marked as picked & donated", item: updated },
       { status: 200 }
     );
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || "Failed to make request" },
+      { error: err.message || "Failed to pick up item" },
       { status: err.status || 500 }
     );
   }

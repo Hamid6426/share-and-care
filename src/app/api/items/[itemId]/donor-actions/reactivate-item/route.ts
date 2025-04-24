@@ -1,4 +1,5 @@
-// src/app/api/items/[itemId]/donor-actions/inactivate-item/route.ts
+// src/app/api/items/[itemId]/donor-actions/reactivate-item/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import connectToDatabase from "@/utils/mongodb";
@@ -24,23 +25,13 @@ export async function POST(
     if (!item) throw { status: 404, message: "Item not found" };
 
     if (item.donor.toString() !== decoded.userId) {
-      throw { status: 403, message: "Only the donor can inactivate this item" };
+      throw { status: 403, message: "Only the donor can reactivate this item" };
     }
 
-    // 3. Inactivate Logic
-    item.status         = "inactive";
-    item.isCancelled    = true;
-
-    // clear any outstanding request or state
-    item.receiver         = null;
-    item.requesters       = [];
-    item.isRequested      = false;
-    item.requestAccepted  = false;
-    item.requestCancelled = false;
-    item.isAccepted       = false;
-    item.isClaimed        = false;
-    item.isPicked         = false;
-    item.isDonated        = false;
+    // 3. Reactivate Logic
+    item.status      = "available";
+    item.isCancelled = false;
+    // all other flags remain false, and requesters/receiver remain cleared
 
     await item.save();
 
@@ -49,12 +40,12 @@ export async function POST(
       .populate("donor", "name email");
 
     return NextResponse.json(
-      { message: "Item inactivated", item: updated },
+      { message: "Item reactivated", item: updated },
       { status: 200 }
     );
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || "Failed to inactivate item" },
+      { error: err.message || "Failed to reactivate item" },
       { status: err.status || 500 }
     );
   }

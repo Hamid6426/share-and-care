@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/utils/mongodb";
 import Item from "@/models/Item";
-import User from "@/models/User";
 import authorize from "@/utils/authorize";
 
 // GET handler to fetch all items with isRequested = true
