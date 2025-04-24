@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, useCallback } from "react";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,7 +10,7 @@ const AcceptedItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchClaimedItems = async () => {
+  const fetchReceivedItems = useCallback(async () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get("/api/items/receiver/received-items", {
@@ -23,11 +24,11 @@ const AcceptedItems = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]); // Only depend on token  
 
   useEffect(() => {
-    fetchClaimedItems();
-  }, [fetchClaimedItems]);
+    fetchReceivedItems();
+  }, [fetchReceivedItems]);
 
   return (
     <div className="container mx-auto p-6">

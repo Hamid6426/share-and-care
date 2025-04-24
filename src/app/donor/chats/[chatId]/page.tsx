@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react"; // <- include useCallback
 import { useParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
@@ -21,12 +21,12 @@ export default function ChatRoom() {
   const [messageText, setMessageText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch(`/api/messages?chatId=${chatId}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to fetch messages");
-
+  
       setMessages(data);
     } catch (err: any) {
       console.error(err);
@@ -34,21 +34,17 @@ export default function ChatRoom() {
     } finally {
       setLoading(false);
     }
-  };
-
+  }, [chatId]); // <- dependency array for useCallback
+  
   // Add this useEffect for periodic fetching
   useEffect(() => {
     if (!isUserLoading && currentUser) {
-      // Fetch immediately
       fetchMessages();
-      
-      // Then set up interval for every 5 seconds
       const intervalId = setInterval(fetchMessages, 10000);
-      
-      // Clean up interval on component unmount
       return () => clearInterval(intervalId);
     }
-  }, [chatId, isUserLoading, currentUser, fetchMessages]);
+  }, [chatId, isUserLoading, currentUser, fetchMessages]); // <- safe now
+  
 
   const handleSendMessage = async () => {
     const token = localStorage.getItem("token");

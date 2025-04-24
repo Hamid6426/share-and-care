@@ -29,32 +29,21 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ ite
     }
 
     // 3. Revert request
-    item.requestCancelled = true;
-    item.isRequested      = false;
-    item.requestAccepted  = false;
-    item.isAccepted       = false;
-    item.status           = "available";
+    item.requestCancelled = false;
+    item.isClaimed = false;
+    item.requestAccepted = false;
+    item.isAccepted = false;
+    item.status = "available";
 
-    item.receiver   = null;
-    item.requesters = item.requesters.filter(
-      (rid) => rid.toString() !== userId
-    );
+    item.receiver = null;
+    item.requesters = item.requesters.filter((rid) => rid.toString() !== userId);
 
     await item.save();
 
     // 4. Return
-    const updated = await Item.findById(item._id).populate(
-      "donor",
-      "name email"
-    );
-    return NextResponse.json(
-      { message: "Request removed", item: updated },
-      { status: 200 }
-    );
+    const updated = await Item.findById(item._id).populate("donor", "name email");
+    return NextResponse.json({ message: "Request removed", item: updated }, { status: 200 });
   } catch (err: any) {
-    return NextResponse.json(
-      { error: err.message || "Failed to remove request" },
-      { status: err.status || 500 }
-    );
+    return NextResponse.json({ error: err.message || "Failed to remove request" }, { status: err.status || 500 });
   }
 }

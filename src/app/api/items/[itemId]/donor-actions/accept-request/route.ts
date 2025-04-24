@@ -6,7 +6,7 @@ import connectToDatabase from "@/utils/mongodb";
 import Item from "@/models/Item";
 import User from "@/models/User";
 
-export async function POST(req: NextRequest, { params }: { params: { itemId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ itemId: string }> }) {
   try {
     const auth = req.headers.get("Authorization") || "";
     const token = auth.replace("Bearer ", "");
@@ -15,8 +15,9 @@ export async function POST(req: NextRequest, { params }: { params: { itemId: str
     await connectToDatabase();
     const user = await User.findById(decoded.userId);
     if (!user) throw { status: 404, message: "User not found" };
+    const { itemId } = await params;
 
-    const item = await Item.findById(params.itemId);
+    const item = await Item.findById(itemId);
     if (!item) throw { status: 404, message: "Item not found" };
 
     if (item.donor.toString() !== decoded.userId) {

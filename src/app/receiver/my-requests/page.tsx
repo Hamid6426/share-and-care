@@ -1,7 +1,7 @@
 // src/app/receiver-dashboard/requested-items/page.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,7 +29,7 @@ const MyRequests = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchRequestedItems = async () => {
+  const fetchRequestedItems = useCallback(async () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get("/api/items/receiver/requested-items", {
@@ -43,7 +43,7 @@ const MyRequests = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]); // Only depend on token
 
   useEffect(() => {
     fetchRequestedItems();
@@ -62,8 +62,6 @@ const MyRequests = () => {
       toast.error("Failed to remove request");
     }
   };
-
-
 
   if (loading) {
     return (
@@ -108,9 +106,7 @@ const MyRequests = () => {
                       Remove Request
                     </button>
                   )}
-                  {item.isPicked && (
-                    <span className="text-green-700 font-semibold">Picked</span>
-                  )}
+                  {item.isPicked && <span className="text-green-700 font-semibold">Picked</span>}
                 </td>
               </tr>
             ))}

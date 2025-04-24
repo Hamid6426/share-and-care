@@ -1,7 +1,7 @@
 // src/app/receiver-dashboard/claimed-items/page.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axiosInstance from "@/utils/axiosInstance";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
@@ -26,23 +26,26 @@ const ClaimedItems = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchClaimedItems = async () => {
+  const fetchClaimedItems = useCallback(async () => {
     try {
       const res = await axiosInstance.get("/api/items/receiver/claimed-items", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+  
       const claimed = res.data.items.filter(
-        (item: Item) => item.status === "claimed" && item.isAccepted && !item.isPicked
+        (item: Item) =>
+          item.status === "claimed" && item.isAccepted && !item.isPicked
       );
+  
       setItems(claimed);
     } catch {
       toast.error("Failed to fetch claimed items");
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]); // Only depend on token  
 
   const handleMarkPicked = async (itemId: string) => {
     try {
