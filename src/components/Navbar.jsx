@@ -17,10 +17,10 @@ export default function Navbar() {
   if (shouldHideNavbar) return null;
 
   return (
-    <header className="sticky top-0 z-50 shadow-md">
+    <header className="bg-card shadow-soft">
       {/* Desktop Navbar */}
-      <nav className="hidden h-14 px-2 md:px-4 bg-green-100 md:flex justify-between items-center">
-        <Link href="/" className="font-bold text-xl text-green-500">
+      <nav className="hidden h-14 px-2 md:px-4 md:flex justify-between items-center">
+        <Link href="/" className="text-primary text-2xl font-bold">
           SHARE n CARE
         </Link>
 

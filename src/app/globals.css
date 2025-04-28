@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+@source {
+  content: ["./src/**/*.{js,ts,jsx,tsx}", "./public/index.html"];
+}
+
+@theme {
+  /* Color tokens */
+  --color-primary: #F77F00;
+  --color-secondary: #FFB703;
+  --color-accent: #FB8500;
+  --color-background: #F9F9F9;
+  --color-card: #FFFFFF;
+  --color-text-primary: #333333;
+
+  /* Shadow token */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
