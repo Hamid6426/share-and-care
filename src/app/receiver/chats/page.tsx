@@ -42,15 +42,15 @@ export default function MyChats() {
   if (!chats.length) return <p>No chats yet.</p>;
 
   return (
-    <div className="max-w-md mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6 text-green-800">My Chats</h1>
+    <div className="max-w-md mx-auto py-8 bg-background">
+      <h1 className="text-2xl font-bold mb-6 text-primary">My Chats</h1>
       <ul className="space-y-4">
         {chats.map((chat) => {
           const otherUserId = chat.participants.find((id) => id !== currentUser?._id);
           return (
-            <li key={chat._id} className="border border-green-400 rounded p-4 bg-white hover:bg-green-50 transition">
+            <li key={chat._id} className="border hover:text-white border-primary rounded p-4 bg-card shadow-soft transition">
               <Link href={`/chats/${chat.chatId}`}>
-                <div className="text-lg font-medium text-green-700">
+                <div className="text-lg font-medium text-primary">
                   Chat with user: <span className="font-bold">{otherUserId}</span>
                 </div>
                 <div className="text-sm text-gray-500">

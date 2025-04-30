@@ -71,95 +71,56 @@ const ItemListing = () => {
     donated: { color: "bg-gray-500 text-white", message: "This item has been donated." },
   };
 
-  // const handleRequest = async (itemId: string) => {
-  //   if (!currentUser) {
-  //     toast.error("You must be logged in as a receiver to request items.");
-  //     return;
-  //   }
-  //   const token = localStorage.getItem("token");
-  //   try {
-  //     await axiosInstance.post(`/api/items/${itemId}/request`, {}, { headers: { Authorization: `Bearer ${token}` } });
-  //     toast.success("Request sent!");
-  //     setItems((prev) =>
-  //       prev.map((item) =>
-  //         item._id === itemId
-  //           ? {
-  //               ...item,
-  //               isRequested: true,
-  //               status: "requested", // its would still be green until a request is accepted
-  //               receiver: {
-  //                 _id: currentUser._id,
-  //                 name: currentUser.name,
-  //                 email: currentUser.email,
-  //               },
-  //             }
-  //           : item
-  //       )
-  //     );
-  //   } catch (err: any) {
-  //     console.error(err);
-  //     toast.error(err.response?.data?.error || "Failed to send request");
-  //   }
-  // };
-
   if (isLoading || isUserLoading) return <p className="text-center">Loading...</p>;
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow">
-      <h2 className="text-3xl font-bold mb-6 text-green-800 text-center">Item Listings</h2>
-
-      {isLoading ? (
-        <p className="text-center">Loading...</p>
+    <div className="max-w-7xl mx-auto p-6 mt-4">
+      {items.length === 0 ? (
+        <p className="text-center text-gray-500">No items found.</p>
       ) : (
-        <>
-          {items.length === 0 ? (
-            <p className="text-center text-gray-500">No items found.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {items.map((item) => {
-                const status = statusInfo[item.status] || statusInfo["available"];
-                return (
-                  <div key={item._id} className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <Link className="item._id" href={`/listing/${item._id}`}>
-                      {item.images.length > 0 ? (
-                        <Image src={item.images[0]} alt={item.title} width={240} height={180} className="w-full object-fill rounded-t-lg aspect-[4/3]" />
-                      ) : (
-                        <div className="w-full flex items-center justify-center bg-gray-200 text-4xl font-bold text-gray-600 rounded-t-lg  aspect-[4/3]">{item.title.charAt(0).toUpperCase()}</div>
-                      )}
-                      <div className="p-3 border-t border-gray-200">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold text-gray-800">
-                            {item.title} ({item.quantity}x)
-                          </h3>
-                          <div className="group relative flex">
-                            <div className={`px-3 py-3 text-xs font-semibold rounded-full ${status.color}`}></div>
-                            <span className="absolute bottom-full right-full scale-0 translate-x-4 -translate-y-4 transition-all rounded bg-gray-800 p-2 text-xs text-white group-hover:scale-100 whitespace-nowrap">
-                              {status.message}
-                            </span>
-                          </div>
-                        </div>
-                        <p className="text-gray-700 mt-2 text-sm h-10">{item.description.length > 70 ? item.description.slice(0, 70) + "..." : item.description}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {items.map((item) => {
+            const status = statusInfo[item.status] || statusInfo["available"];
+            return (
+              <div key={item._id} className="bg-card border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <Link href={`/listing/${item._id}`}>
+                  {item.images.length > 0 ? (
+                    <Image src={item.images[0]} alt={item.title} width={240} height={180} className="w-full object-fill rounded-t-lg aspect-[4/3]" />
+                  ) : (
+                    <div className="w-full flex items-center justify-center bg-gray-200 text-4xl font-bold text-gray-600 rounded-t-lg aspect-[4/3]">{item.title.charAt(0).toUpperCase()}</div>
+                  )}
+                  <div className="p-3 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-text-primary">
+                        {item.title} ({item.quantity}x)
+                      </h3>
+                      <div className="group relative flex">
+                        <div className={`px-3 py-3 text-xs font-semibold rounded-full ${status.color}`}></div>
+                        <span className="absolute bottom-full right-full scale-0 translate-x-4 -translate-y-4 transition-all rounded bg-gray-800 p-2 text-xs text-white group-hover:scale-100 whitespace-nowrap">
+                          {status.message}
+                        </span>
                       </div>
-                    </Link>
+                    </div>
+                    <p className="text-text-primary mt-2 text-sm h-10">{item.description.length > 70 ? item.description.slice(0, 70) + "..." : item.description}</p>
                   </div>
-                );
-              })}
-            </div>
-          )}
-
-          <div className="mt-8 flex justify-center items-center space-x-4">
-            <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)} className="px-4 py-2 bg-green-600 text-white rounded disabled:bg-gray-400">
-              Previous
-            </button>
-            <span className="text-lg font-semibold">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} className="px-4 py-2 bg-green-600 text-white rounded disabled:bg-gray-400">
-              Next
-            </button>
-          </div>
-        </>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
       )}
+
+      <div className="mt-8 flex justify-center items-center space-x-4">
+        <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)} className="px-4 py-2 bg-primary text-white rounded disabled:bg-gray-400">
+          Previous
+        </button>
+        <span className="text-lg font-semibold">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} className="px-4 py-2 bg-primary text-white rounded disabled:bg-gray-400">
+          Next
+        </button>
+      </div>
     </div>
   );
 };

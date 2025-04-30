@@ -24,7 +24,7 @@ const PublicProfile = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await axiosInstance.get(`/api/users/${userId}`, {});
+        const res = await axiosInstance.get(`/api/users/${userId}`);
         setFetchedUser(res.data);
       } catch (err) {
         console.error("Error fetching user:", err);
@@ -35,37 +35,43 @@ const PublicProfile = () => {
     getUser();
   }, [userId]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!fetchedUser) return <p>User not found.</p>;
-  if (isUserLoading) return <p>Loading...</p>;
-  if (!currentUser) return <p>User not found or not logged in.</p>;
+  if (loading || isUserLoading) return <p>Loading...</p>;
+  if (!fetchedUser || !currentUser) return <p>User not found.</p>;
 
   const formField = (label: string, value: string | null, type = "text") => (
     <div>
-      <label className="block text-green-800 text-sm mb-1">{label}:</label>
+      <label className="block text-text-primary text-sm mb-1">{label}:</label>
       <input
         type={type}
         value={value ?? "Not Added"}
         readOnly
-        className="w-full border border-green-500 focus:border-green-500 focus:ring-2 focus:ring-green-500 rounded-md px-3 py-2 mb-4 bg-gray-100"
+        className="w-full border border-secondary focus:border-primary focus:ring-2 focus:ring-primary rounded-md px-3 py-2 mb-4 bg-gray-100"
       />
     </div>
   );
 
   return (
-    <div className="max-w-sm mx-auto">
-      <div className="w-full flex items-center justify-between">
-        <h1 className="text-2xl font-bold my-6 text-green-800">User Profile</h1>
+    <div className="max-w-sm mx-auto bg-card shadow-soft rounded-lg p-6">
+      <div className="w-full flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold text-primary">User Profile</h1>
         <StartChatButton userId={userId} />
       </div>
 
       <div className="mb-4">
         {fetchedUser.profilePicture ? (
-          <Image width={40} height={40} src={fetchedUser.profilePicture} alt="Profile Picture" className="w-32 h-32 object-cover rounded-full" />
+          <Image
+            width={128}
+            height={128}
+            src={fetchedUser.profilePicture}
+            alt="Profile Picture"
+            className="object-cover rounded-full"
+          />
         ) : (
           <>
-            <label className="block text-green-800 text-sm mb-1">Profile Picture:</label>
-            <p className="text-red-500">No profile picture available</p>
+            <label className="block text-text-primary text-sm mb-1">
+              Profile Picture:
+            </label>
+            <p className="text-accent">No profile picture available</p>
           </>
         )}
       </div>

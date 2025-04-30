@@ -84,27 +84,27 @@ const PublicItemDetails = () => {
   if (!item) return <p className="text-center">Item not found.</p>;
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-green-800 mb-4">Item Details</h1>
+    <div className="p-4 max-w-4xl mx-auto mt-4">
+      <h1 className="text-2xl font-bold text-primary mb-4">Item Details</h1>
       <div className="mt-4">
         {loading || item.images.length === 0 ? (
           <div className="w-full flex gap-3">
-            <div className="w-[80%] aspect-[4/3] bg-green-200 animate-pulse rounded-md border border-green-300" />
+            <div className="w-[80%] aspect-[4/3] bg-orange-200 animate-pulse rounded-md border-2 border-orange-300" />
             <div className="flex flex-col items-center gap-3 w-[20%] h-full">
               {Array.from({ length: 3 }).map((_, idx) => (
-                <div key={idx} className="aspect-square w-full bg-green-100 animate-pulse rounded-md border border-green-300" />
+                <div key={idx} className="aspect-square w-full bg-orange-200 animate-pulse rounded-md border-2 border-orange-300" />
               ))}
             </div>
           </div>
         ) : (
           <div className="w-full flex gap-3">
             <div className="w-full aspect-[4/3] relative">
-              <Image src={item.images[0]} alt="Main item image" fill className="object-cover rounded-md border border-green-300 shadow" />
+              <Image src={item.images[0]} alt="Main item image" fill className="object-cover rounded-md border border-primary shadow-soft" />
             </div>
             <div className="grid grid-cols-3 gap-2">
               {item.images.slice(1, 4).map((src: string, idx: number) => (
                 <div key={idx} className="relative aspect-square">
-                  <Image src={src} alt={`Thumbnail ${idx + 1}`} fill className="object-cover rounded-md border border-green-300 shadow-sm" />
+                  <Image src={src} alt={`Thumbnail ${idx + 1}`} fill className="object-cover rounded-md border border-primary shadow-soft" />
                 </div>
               ))}
             </div>
@@ -112,38 +112,38 @@ const PublicItemDetails = () => {
         )}
       </div>
 
-      <div className="bg-white p-6 rounded-md shadow-md">
+      <div className="bg-card p-6 rounded-md shadow-soft">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+          <h2 className="text-xl font-semibold mb-2 text-text-primary">{item.title}</h2>
           <button
             onClick={handleRequest}
             disabled={requesting || item.isRequested}
-            className={`py-2 px-4 mb-2 rounded text-white font-bold hover:bg-green-600 cursor-pointer ${requesting || item.isRequested ? " disabled:bg-gray-500 cursor-not-allowed" : "bg-green-500"}`}
+            className={`py-2 px-4 mb-2 rounded text-white font-bold hover:bg-accent cursor-pointer ${requesting || item.isRequested ? " disabled:bg-gray-400 cursor-not-allowed" : "bg-primary"}`}
           >
             {requesting ? "Requesting..." : item.isRequested ? "Already Requested" : "Request Item"}
           </button>
         </div>
         {requestError && <p className="text-red-500 mt-2">{requestError}</p>}
-        <p>{item.description}</p>
+        <p className="text-text-primary">{item.description}</p>
 
         <div className="grid grid-cols-3 gap-2 mt-4">
           <div className="flex flex-col justify-center items-center text-center w-full gap-2">
-            <h3 className="py-2 border w-full">Category</h3>
-            <p className="py-2 border w-full">{item.category}</p>
+            <h3 className="py-2 border w-full text-text-primary">Category</h3>
+            <p className="py-2 border w-full text-text-primary">{item.category}</p>
           </div>
           <div className="flex flex-col justify-center items-center text-center w-full gap-2">
-            <h3 className="py-2 border w-full">Condition</h3>
-            <p className="py-2 border w-full">{item.condition}</p>
+            <h3 className="py-2 border w-full text-text-primary">Condition</h3>
+            <p className="py-2 border w-full text-text-primary">{item.condition}</p>
           </div>
           <div className="flex flex-col justify-center items-center text-center w-full gap-2">
-            <h3 className="py-2 border w-full">Quantity</h3>
-            <p className="py-2 border w-full">{item.quantity}</p>
+            <h3 className="py-2 border w-full text-text-primary">Quantity</h3>
+            <p className="py-2 border w-full text-text-primary">{item.quantity}</p>
           </div>
         </div>
 
-        <div className="font-semibold mt-4">
+        <div className="font-semibold mt-4 text-text-primary">
           Listed By -{" "}
-          <Link className="text-green-500 hover:text-green-600" href={`/${item.donor._id}`}>
+          <Link className="text-primary hover:text-accent" href={`/${item.donor._id}`}>
             {item.donor.name}
           </Link>
         </div>

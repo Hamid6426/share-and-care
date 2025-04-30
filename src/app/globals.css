@@ -1,18 +1,14 @@
 @import "tailwindcss";
 
-@source {
-  content: ["./src/**/*.{js,ts,jsx,tsx}", "./public/index.html"];
-}
-
 @theme {
-  /* Color tokens */
-  --color-primary: #F77F00;
-  --color-secondary: #FFB703;
-  --color-accent: #FB8500;
-  --color-background: #F9F9F9;
-  --color-card: #FFFFFF;
-  --color-text-primary: #333333;
+  /* Color Palette */
+  --color-primary:   #F77F00; /* buttons, links, CTAs */
+  --color-secondary: #FFB703; /* highlights/accents */
+  --color-accent:    #FB8500; /* extra emphasis */
+  --color-background:#F9F9F9; /* page backgrounds */
+  --color-card:      #FFFFFF; /* panels/cards */
+  --color-text-primary: #333333; /* main text */
 
-  /* Shadow token */
-  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
+  /* Shadow Token */
+  --shadow-soft: 0 2px 8px #bbb;
 }

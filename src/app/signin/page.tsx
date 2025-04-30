@@ -41,12 +41,12 @@ const Signin: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-green-300 px-4">
-      <div className="w-full max-w-md bg-green-100 shadow-lg rounded-lg p-8">
-        <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Sign In</h2>
+    <div className="flex items-center justify-center min-h-screen bg-background px-4">
+      <div className="w-full max-w-md bg-card shadow-soft rounded-lg p-8">
+        <h2 className="text-2xl font-bold text-primary mb-6 text-center">Sign In</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-green-800 text-sm mb-1">
+            <label htmlFor="email" className="block text-text-primary text-sm mb-1">
               Email:
             </label>
             <input
@@ -57,11 +57,11 @@ const Signin: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full border border-green-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 rounded-md px-3 py-2"
+              className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-green-800 text-sm mb-1">
+            <label htmlFor="password" className="block text-text-primary text-sm mb-1">
               Password:
             </label>
             <input
@@ -72,24 +72,42 @@ const Signin: React.FC = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full border border-green-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 rounded-md px-3 py-2"
+              className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
             />
           </div>
-          <button type="submit" disabled={isLoading} className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-primary hover:bg-accent text-white font-medium py-2 px-4 rounded-md transition duration-200"
+          >
             {isLoading ? "Signing In..." : "Sign In"}
           </button>
         </form>
+
         <div className="flex justify-center my-3">
-          <div className="text-green-600">OR</div>
+          <div className="text-secondary">OR</div>
         </div>
+
         <div className="flex">
-        <Link href="/signup" className="text-center border-green-500 border text-green-500 hover:text-green-600 font-medium py-2 px-4 rounded-md transition duration-200 w-full">Create Account</Link>
+          <Link
+            href="/signup"
+            className="text-center border-secondary border text-secondary hover:text-accent font-medium py-2 px-4 rounded-md transition duration-200 w-full"
+          >
+            Create Account
+          </Link>
         </div>
+
         <div className="flex justify-center my-3">
-          <div className=" text-green-600">Still Not Verified Yet?</div>
+          <div className="text-secondary">Still Not Verified Yet?</div>
         </div>
+
         <div className="flex">
-        <Link href="/resend-verification" className="text-center border-green-500 border text-green-500 hover:text-green-600 font-medium py-2 px-4 rounded-md transition duration-200 w-full">Verify Your Account</Link>
+          <Link
+            href="/resend-verification"
+            className="text-center border-secondary border text-secondary hover:text-accent font-medium py-2 px-4 rounded-md transition duration-200 w-full"
+          >
+            Verify Your Account
+          </Link>
         </div>
       </div>
     </div>

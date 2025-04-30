@@ -64,7 +64,7 @@ const EditItemForm: React.FC<Props> = ({ item, onUpdated }) => {
       />
       <button
         type="submit"
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50"
+        className="bg-primary text-white hover:bg-accent px-4 py-2 rounded disabled:opacity-50"
         disabled={loading}
       >
         {loading ? "Saving..." : "Save Changes"}

@@ -26,7 +26,7 @@ const ContactUs: React.FC = () => {
         <h2 className="text-3xl font-bold text-primary mb-6 text-center">Contact Us</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-textPrimary mb-1">Name</label>
+            <label className="block text-sm font-medium text-text-primary mb-1">Name</label>
             <input
               type="text"
               name="name"
@@ -39,7 +39,7 @@ const ContactUs: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-textPrimary mb-1">Email</label>
+            <label className="block text-sm font-medium text-text-primary mb-1">Email</label>
             <input
               type="email"
               name="email"
@@ -52,7 +52,7 @@ const ContactUs: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-textPrimary mb-1">Message</label>
+            <label className="block text-sm font-medium text-text-primary mb-1">Message</label>
             <textarea
               name="message"
               value={formData.message}
