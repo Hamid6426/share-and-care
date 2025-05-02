@@ -23,7 +23,7 @@ const VerifyEmail = () => {
         verificationToken: verificationToken,
       });
       toast.success(res.data.message || "Email verified successfully!");
-      router.push("/signin")
+      router.push("/signin");
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Verification failed.");
     } finally {
@@ -32,23 +32,23 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-green-300 px-4">
-      <div className="w-full max-w-md bg-green-100 shadow-lg rounded-lg p-8 text-center">
-        <h2 className="text-2xl font-bold text-green-700 mb-4">Verify Your Email</h2>
-        <p className="text-green-800 mb-4">
+    <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="w-full max-w-md bg-card shadow-soft rounded-lg p-8 text-center">
+        <h2 className="text-2xl font-bold text-primary mb-4">Verify Your Email</h2>
+        <p className="text-text-primary mb-4">
           Click the button below to verify your email.
         </p>
         <button
           onClick={handleVerify}
           disabled={isLoading || !verificationToken}
-          className="w-full cursor-pointer bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md transition duration-200"
+          className="w-full cursor-pointer bg-primary hover:bg-accent text-white font-medium py-2 px-4 rounded-md transition duration-200"
         >
           {isLoading ? "Verifying..." : "Verify Email"}
         </button>
       </div>
-    
     </div>
   );
 };
 
 export default VerifyEmail;
+  
