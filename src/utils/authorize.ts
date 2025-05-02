@@ -13,7 +13,7 @@ async function authorize(req: NextRequest) {
     const error = new Error("Unauthorized");
     (error as any).status = 401;
     throw error;
-  }
+  }j
 
   const token = auth.replace("Bearer ", "").trim();
 

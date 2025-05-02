@@ -51,7 +51,7 @@ const PublicProfile = () => {
   );
 
   return (
-    <div className="max-w-sm mx-auto bg-card shadow-soft rounded-lg p-6">
+    <div className="max-w-sm mx-auto rounded-lg p-6">
       <div className="w-full flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold text-primary">User Profile</h1>
         <StartChatButton userId={userId} />

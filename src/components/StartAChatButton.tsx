@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
-import axiosInstance from "@/utils/axiosInstance"; // ✅ Import axiosInstance
+import axiosInstance from "@/utils/axiosInstance"; 
 
 interface StartChatButtonProps {
   userId: string; // receiverId
@@ -50,7 +50,7 @@ export default function StartChatButton({ userId }: StartChatButtonProps) {
     <button
       onClick={handleStartChat}
       disabled={loading}
-      className="cursor-pointer px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+      className="cursor-pointer px-4 py-2 bg-primary text-white rounded hover:bg-accent disabled:opacity-50"
     >
       {loading ? "Starting..." : "Start Chat"}
     </button>
