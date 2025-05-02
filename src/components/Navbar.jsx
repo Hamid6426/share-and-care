@@ -51,16 +51,9 @@ export default function Navbar() {
               </Link>
             </div>
           ) : (
-            <div>
-              <Tooltip message="Chats">
-                <Link href="/chats">
-                  <MdChat className="text-primary hover:text-secondary transition-colors duration-300" />
-                </Link>
-              </Tooltip>
-              <Link href="/signin" className="bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
-                SIGN IN
-              </Link>
-            </div>
+            <Link href="/signin" className="bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
+              SIGN IN
+            </Link>
           )}
         </div>
       </nav>
@@ -95,9 +88,8 @@ export default function Navbar() {
               LISTING
             </Link>
             {!isUserLoading && currentUser ? (
-              <div >
-                <Link href="chats" className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
-                </Link>
+              <div>
+                <Link href="chats" className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"></Link>
 
                 <Link href={`/${currentUser.role}`} className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
                   DASHBOARD
