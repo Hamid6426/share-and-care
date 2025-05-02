@@ -42,7 +42,7 @@ export default function MyChats() {
   if (!chats.length) return <p>No chats yet.</p>;
 
   return (
-    <div className="max-w-md mx-auto py-8 bg-background">
+    <div className="w-full mx-auto py-8 bg-background">
       <h1 className="text-2xl font-bold mb-6 text-primary">My Chats</h1>
       <ul className="space-y-4">
         {chats.map((chat) => {

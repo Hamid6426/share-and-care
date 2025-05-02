@@ -3,82 +3,88 @@
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
+import { FaTwitter, FaLinkedin, FaFacebook, FaInstagram, FaDiscord, FaTelegram, FaWhatsapp, FaTiktok } from "react-icons/fa";
 
-// Function to format the date to MM-DD-YYYY
-const formatDate = (date: string | null) => {
-  if (!date) return "Not Available"; // If there's no date, return a placeholder.
-
-  const dateObj = new Date(date);
-  const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Add 1 to month because it's 0-indexed.
-  const day = String(dateObj.getDate()).padStart(2, "0");
-  const year = dateObj.getFullYear();
-  return `${month} - ${day} - ${year}`;
-};
+// format date to MM-DD-YYYY
+const formatDate = (date: string | null) =>
+  date
+    ? new Date(date)
+        .toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" })
+    : "Not Available";
 
 const Profile = () => {
   const { currentUser, isUserLoading } = useAuth();
 
-  if (isUserLoading) {
-    return <p>Loading...</p>;
-  }
+  if (isUserLoading) return <p className="text-center py-10">Loading profile…</p>;
+  if (!currentUser) return <p className="text-center py-10 text-red-500">User not logged in.</p>;
 
-  if (!currentUser) {
-    return <p>User not found or not logged in.</p>;
-  }
-
-  const formField = (label: string, value: string | null, type = "text") => (
-    <div>
-      <label className="block text-text-primary text-sm mb-1">{label}:</label>
-      <input
-        type={type}
-        value={value ?? "Not Added"}
-        readOnly
-        className="w-full border border-primary focus:border-primary focus:ring-2 focus:ring-primary rounded-md px-3 py-2 mb-4 bg-gray-100"
-      />
+  // reusable info row
+  const InfoItem = ({ label, value }: { label: string; value?: string | null }) => (
+    <div className="mb-4">
+      <p className="text-xs uppercase text-gray-500">{label}</p>
+      <p className="text-sm text-gray-800">{value ?? "Not Added"}</p>
     </div>
   );
 
-  return (
-    <div className="max-w-sm mx-auto">
-      <h1 className="text-2xl font-bold my-6 text-text-primary ">User Profile</h1>
+  // social button
+  const SocialBtn = ({ icon: Icon, url }: { icon: React.ElementType; url?: string | null }) =>
+    url ? (
+      <a href={url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-gray-100 rounded-full">
+        <Icon size={24} />
+      </a>
+    ) : null;
 
-      {/* Profile Picture */}
-      <div>
-        <div className="mb-4">
-          {currentUser.profilePicture ? (
-            <Image width={500} height={500} src={currentUser.profilePicture} alt="Profile Picture" className="w-32 h-32 object-cover rounded-full" />
-          ) : (
-            <>
-              <label className="block text-text-primary text-sm mb-1">Profile Picture:</label>
-              <p className="text-red-500">No profile picture available</p>
-            </>
-          )}
+  return (
+    <div className="mx-auto max-w-4xl bg-white shadow-lg rounded-xl overflow-hidden">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-primary to-accent p-6 text-white flex flex-col md:flex-row space-x-4">
+        {currentUser.profilePicture ? (
+          <Image
+            src={currentUser.profilePicture}
+            alt="Avatar"
+            width={80}
+            height={80}
+            className="rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
+            No Image
+          </div>
+        )}
+        <div>
+          <h2 className="text-xl font-semibold">{currentUser.name}</h2>
+          <span className="inline-block mt-1 bg-white/30 text-xs uppercase px-2 py-1 rounded-full">
+            {currentUser.role}
+          </span>
+          <p className="mt-2 text-xs">Joined {formatDate(currentUser.createdAt)}</p>
         </div>
       </div>
 
-      {formField("Name", currentUser.name)}
-      {formField("Email", currentUser.email, "email")}
-      {formField("Role", currentUser.role.toUpperCase())}
-      {formField("Phone", currentUser.phone)}
-      {formField("Country", currentUser.country)}
-      {formField("State", currentUser.state)}
-      {formField("City", currentUser.city)}
-      {formField("Street", currentUser.street)}
-      {formField("Zip Code", currentUser.zipCode)}
-      {formField("Address", currentUser.address)}
-      {formField("Whatsapp", currentUser.whatsapp)}
-      {formField("Telegram", currentUser.telegram)}
-      {formField("Discord", currentUser.discord)}
-      {formField("Facebook", currentUser.facebook)}
-      {formField("Twitter", currentUser.twitter)}
-      {formField("Instagram", currentUser.instagram)}
-      {formField("LinkedIn", currentUser.linkedin)}
-      {formField("TikTok", currentUser.tiktok)}
-      {formField("Bio", currentUser.bio)}
-      {formField("Verified", currentUser.isVerified ? "You are verified!" : "You are not verified yet!")}
+      {/* Body */}
+      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+        <InfoItem label="Email" value={currentUser.email} />
+        <InfoItem label="Phone" value={currentUser.phone} />
+        <InfoItem label="Country" value={currentUser.country} />
+        <InfoItem label="State" value={currentUser.state} />
+        <InfoItem label="City" value={currentUser.city} />
+        <InfoItem label="Street" value={currentUser.street} />
+        <InfoItem label="Zip Code" value={currentUser.zipCode} />
+        <InfoItem label="Address" value={currentUser.address} />
+        <InfoItem label="Bio" value={currentUser.bio} />
+        <InfoItem label="Verified" value={currentUser.isVerified ? "Yes" : "No"} />
+      </div>
 
-      {/* Format and display the Verified At date */}
-      {formField('Joined "Share n Care" since', formatDate(currentUser.createdAt))}
+      {/* Footer: Social */}
+      <div className="gap-x-6 pl-6 md:pl-0 pb-6 flex text-gray-600 flex-wrap">
+        <SocialBtn icon={FaTwitter} url={currentUser.twitter} />
+        <SocialBtn icon={FaLinkedin} url={currentUser.linkedin} />
+        <SocialBtn icon={FaFacebook} url={currentUser.facebook} />
+        <SocialBtn icon={FaInstagram} url={currentUser.instagram} />
+        <SocialBtn icon={FaDiscord} url={currentUser.discord} />
+        <SocialBtn icon={FaTelegram} url={currentUser.telegram} />
+        <SocialBtn icon={FaWhatsapp} url={currentUser.whatsapp} />
+        <SocialBtn icon={FaTiktok} url={currentUser.tiktok} />
+      </div>
     </div>
   );
 };

@@ -4,12 +4,12 @@
 
 import Link from "next/link";
 import React from "react";
-import { MdHome, MdDashboard, MdRequestPage, MdSettings, MdLogout, MdPerson, MdChat } from "react-icons/md";
+import { MdHome, MdDashboard, MdRequestPage, MdSettings, MdLogout, MdPerson } from "react-icons/md";
 import Tooltip from "@/components/Tooltips";
 
 export default function ReceiverSidebar() {
   return (
-    <div className="sticky text-2xl text-primary shadow-soft top-0 z-50 flex flex-col justify-between items-center py-4 h-screen w-16">
+    <div className="sticky shrink-0 text-2xl text-primary shadow-soft top-0 z-50 flex flex-col justify-between items-center py-4 h-screen w-16">
       <div>
         <Tooltip message="Home">
           <Link href="/">
@@ -28,11 +28,11 @@ export default function ReceiverSidebar() {
             <MdRequestPage className="hover:text-secondary transition-colors duration-300" />
           </Link>
         </Tooltip>
-        <Tooltip message="Chats">
+        {/* <Tooltip message="Chats">
           <Link href="/receiver/chats">
             <MdChat className="hover:text-secondary transition-colors duration-300" />
           </Link>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip message="Profile">
           <Link href="/receiver/profile">
             <MdPerson className="hover:text-secondary transition-colors duration-300" />

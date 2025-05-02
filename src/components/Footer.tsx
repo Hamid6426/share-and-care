@@ -6,9 +6,10 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function Footer() {
   const pathname = usePathname();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { currentUser, isUserLoading } = useAuth();
 
-  const excludedBasePaths = ["/donor", "/receiver", "/admin"];
+  const excludedBasePaths = ["/donor", "/receiver", "/admin", "/chats"];
   const shouldHideFooter = excludedBasePaths.some((basePath) => pathname.startsWith(basePath));
   if (shouldHideFooter) return null;
 

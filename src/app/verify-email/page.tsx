@@ -32,7 +32,7 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background px-4">
+    <div className="flex items-center justify-center min-h-screen px-4">
       <div className="w-full max-w-md bg-card shadow-soft rounded-lg p-8 text-center">
         <h2 className="text-2xl font-bold text-primary mb-4">Verify Your Email</h2>
         <p className="text-text-primary mb-4">

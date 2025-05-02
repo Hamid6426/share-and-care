@@ -80,12 +80,12 @@ const PatchSocialInfo: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center ">
-      <div className="w-full bg-green-100 rounded-lg shadow-lg p-6">
-        <h3 className="text-xl font-semibold text-green-700 mb-4">Social Info</h3>
+      <div className="w-full   rounded-lg shadow-lg p-6">
+        <h3 className="text-xl font-semibold text-primary mb-4">Social Info</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           {Object.entries(socialInfo).map(([key, value]) => (
             <div key={key}>
-              <label htmlFor={key} className="block text-green-800 text-sm mb-1">
+              <label htmlFor={key} className="block text-primary text-sm mb-1">
                 {key.charAt(0).toUpperCase() + key.slice(1)}:
               </label>
               <input
@@ -94,11 +94,11 @@ const PatchSocialInfo: React.FC = () => {
                 type="text"
                 value={value || ""}
                 onChange={handleChange}
-                className="w-full border border-green-500 rounded-md px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                className="w-full border border-primary rounded-md px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary"
               />
             </div>
           ))}
-          <button type="submit" disabled={isSubmitting} className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded-md transition disabled:opacity-50">
+          <button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-accent text-white font-medium py-2 rounded-md transition disabled:opacity-50">
             {isSubmitting ? "Updating…" : "Update Social Info"}
           </button>
         </form>

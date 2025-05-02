@@ -37,6 +37,7 @@ const statusInfo: Record<string, { color: string; message: string }> = {
 
 const ItemListing: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { currentUser, isUserLoading } = useAuth();
 
   const { data, error, isLoading } = useSWR(

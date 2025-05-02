@@ -28,13 +28,13 @@ interface Item {
 
 const ListingTeaser = () => {
   const [items, setItems] = useState<Item[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_totalItems, setTotalItems] = useState<number>(0);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { currentUser, isUserLoading } = useAuth();
+  const [_totalPages, setTotalPages] = useState<number>(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [currentPage, _setCurrentPage] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {isUserLoading } = useAuth();
   useEffect(() => {
     const fetchItems = async () => {
       setIsLoading(true);
@@ -58,10 +58,6 @@ const ListingTeaser = () => {
 
     fetchItems();
   }, [currentPage]);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   const statusInfo: Record<string, { color: string; message: string }> = {
     available: { color: "bg-green-500 text-white", message: "This item is available for donation." },

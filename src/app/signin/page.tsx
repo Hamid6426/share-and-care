@@ -41,7 +41,7 @@ const Signin: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-[calc(100vh_-_4rem)] bg-background px-4">
+    <div className="flex items-center justify-center h-[calc(100vh_-_4rem)] px-4">
       <div className="w-full max-w-md bg-card shadow-soft rounded-lg p-8">
         <h2 className="text-2xl font-bold text-primary mb-6 text-center">Sign In</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -81,7 +81,7 @@ const Signin: React.FC = () => {
         </form>
 
         <div className="flex justify-center mt-3">
-          Haven't created an account?&nbsp;
+          Haven&apos;t created an account?&nbsp;
           <Link href="/signup" className="text-primary font-bold hover:text-accent transition duration-200">
             Create Account
           </Link>

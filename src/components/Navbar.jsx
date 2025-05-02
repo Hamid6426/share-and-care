@@ -4,7 +4,8 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import React, { useState } from "react"; // ✅ import useState
 import { useAuth } from "@/contexts/AuthContext";
-import { MdClose, MdMenu } from "react-icons/md";
+import { MdChat, MdClose, MdMenu } from "react-icons/md";
+import Tooltip from "./Tooltips";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -12,10 +13,8 @@ export default function Navbar() {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const excludedBasePaths = ["/donor", "/receiver", "/admin"];
-  const shouldHideNavbar = excludedBasePaths.some((basePath) =>
-    pathname.startsWith(basePath)
-  );
+  const excludedBasePaths = ["/donor", "/receiver", "/admin", "/chats"];
+  const shouldHideNavbar = excludedBasePaths.some((basePath) => pathname.startsWith(basePath));
   if (shouldHideNavbar) return null;
 
   return (
@@ -43,19 +42,25 @@ export default function Navbar() {
 
         <div className="flex gap-6 items-center text-primary text-sm font-bold">
           {!isUserLoading && currentUser ? (
-            <Link
-              href={`/${currentUser.role}`}
-              className="bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
-            >
-              DASHBOARD
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link href="/chats">
+                <MdChat className="text-primary  text-2xl hover:text-secondary transition-colors duration-300" />
+              </Link>
+              <Link href={`/${currentUser.role}`} className="bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
+                DASHBOARD
+              </Link>
+            </div>
           ) : (
-            <Link
-              href="/signin"
-              className="bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
-            >
-              SIGN IN
-            </Link>
+            <div>
+              <Tooltip message="Chats">
+                <Link href="/chats">
+                  <MdChat className="text-primary hover:text-secondary transition-colors duration-300" />
+                </Link>
+              </Tooltip>
+              <Link href="/signin" className="bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
+                SIGN IN
+              </Link>
+            </div>
           )}
         </div>
       </nav>
@@ -65,64 +70,41 @@ export default function Navbar() {
         <Link href="/" className="font-bold text-xl text-primary">
           SHARE n CARE
         </Link>
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="cursor-pointer"
-        >
-          {isMobileMenuOpen ? (
-            <MdClose className="text-3xl mt-1 text-primary" />
-          ) : (
-            <MdMenu className="text-3xl mt-1 text-primary" />
-          )}
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="cursor-pointer">
+          {isMobileMenuOpen ? <MdClose className="text-3xl mt-1 text-primary" /> : <MdMenu className="text-3xl mt-1 text-primary" />}
         </button>
       </div>
 
       {/* Mobile Navbar */}
       {isMobileMenuOpen && (
         <nav className="md:hidden h-screen w-full px-2 md:px-4 bg-background flex flex-col justify-start items-center gap-6 text-primary text-sm font-bold">
-          <Link
-            href="/"
-            className="font-black text-2xl text-primary mt-2"
-          >
+          <Link href="/" className="font-black text-2xl text-primary mt-2">
             SHARE n CARE
           </Link>
           <div className="text-center flex flex-col gap-6 items-center w-full max-w-[200px]">
-            <Link
-              href="/about"
-              className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
-            >
+            <Link href="/about" className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
               ABOUT
             </Link>
-            <Link
-              href="/contact"
-              className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
-            >
+            <Link href="/contact" className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
               CONTACT
             </Link>
-            <Link
-              href="/demo"
-              className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
-            >
+            <Link href="/demo" className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
               DEMO
             </Link>
-            <Link
-              href="/listing"
-              className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
-            >
+            <Link href="/listing" className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
               LISTING
             </Link>
             {!isUserLoading && currentUser ? (
-              <Link
-                href={`/${currentUser.role}`}
-                className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
-              >
-                DASHBOARD
-              </Link>
+              <div >
+                <Link href="chats" className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
+                </Link>
+
+                <Link href={`/${currentUser.role}`} className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
+                  DASHBOARD
+                </Link>
+              </div>
             ) : (
-              <Link
-                href="/signin"
-                className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
-              >
+              <Link href="/signin" className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition">
                 SIGN IN
               </Link>
             )}
