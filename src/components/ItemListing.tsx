@@ -18,7 +18,7 @@ const statusInfo: Record<
   },
   requested: {
     name: "available", // intentional available
-   color: "bg-green-500 text-white",
+    color: "bg-green-500 text-white",
     message: "This item is available for donation.",
   },
   claimed: {
@@ -86,7 +86,6 @@ const ItemListing: React.FC = () => {
 
   // Decide which items to actually render (max 8)
   const displayItems = filteredItems.slice(0, 8);
-  const placeholdersCount = 8 - displayItems.length;
 
   return (
     <div className="max-w-7xl mx-auto p-6 mt-4">
@@ -167,25 +166,27 @@ const ItemListing: React.FC = () => {
             );
           })}
 
-          {/* Render empty placeholders */}
+          {/*   <div>
           {Array.from({ length: placeholdersCount }).map((_, idx) => (
-            <div className="rounded-2xl">
+         <div className="rounded-2xl">
               <div
                 key={`placeholder-${idx}`}
                 className="bg-gray-50 border border-gray-200 aspect-[4/3] rounded-t-2xl"
               />
               <div className="flex-1 px-2 py-2 flex flex-col justify-between shadow-lg rounded-2xl">
                 <h3 className="opacity-0  text-lg bg-gray font-bold text-gray-900 line-clamp-1">
-                  -
+                  {" "}
                 </h3>
                 <span
                   className={`opacity-0 mt-2 inline-flex items-center gap-3 text-xs font-semibold px-3 py-1  shadow md:shadow-md`}
                 >
-                  <span className="h-2 w-2 rounded-full bg-white"></span>-
+                  {" "}
+                  <span className="h-2 w-2 rounded-full bg-white"> </span>-
                 </span>
               </div>
-            </div>
+            </div> 
           ))}
+          </div>*/}
         </div>
       )}
 
