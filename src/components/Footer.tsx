@@ -14,7 +14,7 @@ export default function Footer() {
   if (shouldHideFooter) return null;
 
   return (
-    <footer className="bg-card text-text-primary mt-8 shadow-soft">
+    <footer className="bg-card text-text-primary shadow-soft">
       <div className="max-w-6xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-6">
           {/* Navigation */}

@@ -13,45 +13,41 @@ interface Item {
   condition: string;
   images: string[];
   quantity: number;
-  status: "available" | "requested" | "claimed" | "picked" | "donated"; // there are 5 conditions: available, requested, claimed, picked, and donated
-  donor: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  receiver: {
-    _id: string;
-    name: string;
-    email: string;
-  } | null; // receiver details if the item is claimed
+  status: "available" | "requested" | "claimed" | "picked" | "donated";
+  donor: { _id: string; name: string; email: string };
+  receiver:
+    | { _id: string; name: string; email: string }
+    | null;
 }
+
+const statusStyles: Record<Item["status"], string> = {
+  available: "bg-[var(--color-secondary)] text-white",
+  requested: "bg-[var(--color-accent)] text-white",
+  claimed: "bg-yellow-800 text-white",
+  picked: "bg-blue-600 text-white",
+  donated: "bg-green-600 text-white",
+};
 
 const MyListing = () => {
   const [items, setItems] = useState<Item[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchItems = async (page = 1, status?: string, category?: string) => {
+    const fetchItems = async () => {
       setIsLoading(true);
       try {
-        const params = new URLSearchParams({ page: page.toString(), limit: "12" });
-        if (status) params.append("status", status);
-        if (category) params.append("category", category);
-        const response = await axiosInstance.get("/api/items/donor/listed-items", {
-          params: {
-            page: currentPage,
-            limit: 12,
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await axiosInstance.get(
+          "/api/items/donor/listed-items",
+          {
+            params: { page: currentPage, limit: 12 },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setItems(response.data.items);
-        setTotalItems(response.data.totalItems);
         setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error(error);
@@ -64,78 +60,130 @@ const MyListing = () => {
     fetchItems();
   }, [currentPage]);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-green-800">My Items</h2>
+    <div className="max-w-4xl mx-auto px-4 py-8 bg-[var(--color-background)]">
+      <h2 className="text-3xl font-bold mb-6 text-[var(--color-primary)]">
+        My Items
+      </h2>
 
       {isLoading ? (
-        <p className="text-center">Loading...</p>
+        <p className="text-center text-[var(--color-text-primary)]">Loading...</p>
+      ) : items.length === 0 ? (
+        <p className="text-center text-gray-500">No items found.</p>
       ) : (
-        <>
-          <div className="space-y-4">
-            {items.length === 0 ? (
-              <p className="text-center text-gray-500">No items found.</p>
-            ) : (
-              items.map((item) => (
-                <div key={item._id} className="border h-fit p-4 rounded-lg shadow-sm">
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
-                  <p className="text-sm text-gray-500">
-                    {item.category} - {item.status}
-                  </p>
-                  <p className="text-base">{item.description}</p>
-                  <p className="mt-2 text-sm">
-                    <strong>Donor:</strong> {item.donor.name} ({item.donor.email})
-                  </p>
-                  {item.receiver && (
-                    <p className="mt-1 text-sm">
-                      <strong>Receiver:</strong> {item.receiver.name} ({item.receiver.email})
-                    </p>
-                  )}
-                  <p className="mt-2 text-sm">
-                    <strong>Quantity:</strong> {item.quantity}
-                  </p>
-                  <div className="flex mt-2 gap-3">
-                    <Link href={`/donor/my-listing/${item._id}`} className="px-4 py-2 bg-green-600 text-white rounded ">
-                      Preview Item
-                    </Link>
-                    <Link href={`/donor/my-listing/${item._id}/edit`} className="px-4 py-2 bg-green-600 text-white rounded ">
-                      Edit Item
-                    </Link>
-                  </div>
-
-                  {item.images.length > 0 && (
-                    <div className="mt-2">
-                      <h4 className="font-semibold">Images:</h4>
-                      <div className="flex space-x-2">
-                        {item.images.map((image, index) => (
-                          <Image key={index} width={240} height={180} src={image} alt={`Image ${index + 1}`} className="w-20 h-20 object-cover rounded" />
-                        ))}
-                      </div>
+        <div className="space-y-6">
+          {items.map((item) => {
+            const firstImage = item.images[0];
+            return (
+              <div
+                key={item._id}
+                className="bg-[var(--color-card)] border border-gray-200 rounded-lg shadow p-6 flex flex-col md:flex-row gap-4"
+              >
+                {/* Image or placeholder */}
+                <div className="flex-shrink-0">
+                  {firstImage ? (
+                    <Image
+                      src={firstImage}
+                      alt={item.title}
+                      width={240}
+                      height={180}
+                      className="w-[240px] h-[180px] object-cover rounded"
+                    />
+                  ) : (
+                    <div className="w-[240px] h-[180px] bg-gray-100 rounded flex items-center justify-center text-gray-400">
+                      No Image
                     </div>
                   )}
                 </div>
-              ))
-            )}
-          </div>
 
-          <div className="mt-6 flex justify-center space-x-4">
-            <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)} className="px-4 py-2 bg-green-600 text-white rounded disabled:bg-gray-400">
-              Previous
-            </button>
-            <span className="self-center text-lg font-semibold">
-              {currentPage} / {totalPages}
-            </span>
-            <button disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} className="px-4 py-2 bg-green-600 text-white rounded disabled:bg-gray-400">
-              Next
-            </button>
-          </div>
-        </>
+                {/* Content */}
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-2xl font-semibold text-[var(--color-text-primary)]">
+                      {item.title}
+                    </h3>
+                    <div className="mt-1 flex items-center flex-wrap gap-2">
+                      <span className="text-sm text-gray-500">
+                        {item.category}
+                      </span>
+                      <span
+                        className={`text-xs font-medium px-2 py-1 rounded-full ${statusStyles[item.status]}`}
+                      >
+                        {item.status.toUpperCase()}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-[var(--color-text-primary)]">
+                      {item.description}
+                    </p>
+                    <div className="mt-4 text-sm text-[var(--color-text-primary)] space-y-1">
+                      <p>
+                        <strong>Donor:</strong> {item.donor.name} (
+                        {item.donor.email})
+                      </p>
+                      {item.receiver && (
+                        <p>
+                          <strong>Receiver:</strong> {item.receiver.name} (
+                          {item.receiver.email})
+                        </p>
+                      )}
+                      <p>
+                        <strong>Quantity:</strong> {item.quantity}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <Link
+                      href={`/donor/my-listing/${item._id}`}
+                      className="px-4 py-2 bg-[var(--color-primary)] text-white font-medium rounded hover:bg-[var(--color-accent)] transition"
+                    >
+                      Preview
+                    </Link>
+                    <Link
+                      href={`/donor/my-listing/${item._id}/edit`}
+                      className="px-4 py-2 bg-[var(--color-primary)] text-white font-medium rounded hover:bg-[var(--color-accent)] transition"
+                    >
+                      Edit
+                    </Link>
+                    <Link
+                      href={`/donor/my-listing/${item._id}/add-pictures`}
+                      className="px-4 py-2 bg-[var(--color-primary)] text-white font-medium rounded hover:bg-[var(--color-accent)] transition"
+                    >
+                      Add Pictures
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
-     
+
+      {/* Pagination */}
+      {items.length > 0 && (
+        <div className="mt-8 flex justify-center items-center gap-4">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 rounded font-medium transition disabled:opacity-50 bg-[var(--color-primary)] text-white hover:bg-[var(--color-accent)]"
+          >
+            Previous
+          </button>
+          <span className="text-[var(--color-text-primary)] font-semibold">
+            {currentPage} / {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((p) => Math.min(totalPages, p + 1))
+            }
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 rounded font-medium transition disabled:opacity-50 bg-[var(--color-primary)] text-white hover:bg-[var(--color-accent)]"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
