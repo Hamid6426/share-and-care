@@ -33,7 +33,7 @@ const ContactUs: React.FC = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full rounded-full border-gray-300 focus:border-primary focus:ring-primary shadow-sm px-4 py-3"
+              className="w-full rounded-sm border border-gray-300 focus:border-primary focus:ring-primary shadow-sm px-4 py-3"
               placeholder="Your Name"
             />
           </div>
@@ -46,7 +46,7 @@ const ContactUs: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full rounded-full border-gray-300 focus:border-primary focus:ring-primary shadow-sm px-4 py-3"
+              className="w-full rounded-sm border border-gray-300 focus:border-primary focus:ring-primary shadow-sm px-4 py-3"
               placeholder="you@example.com"
             />
           </div>
@@ -58,13 +58,13 @@ const ContactUs: React.FC = () => {
               value={formData.message}
               onChange={handleChange}
               required
-              className="w-full rounded-2xl border-gray-300 focus:border-primary focus:ring-primary shadow-sm px-4 py-3"
+              className="w-full rounded-2xl border border-gray-300 focus:border-primary focus:ring-primary shadow-sm px-4 py-3"
               rows={5}
               placeholder="Type your message here..."
             ></textarea>
           </div>
 
-          <button type="submit" className="w-full bg-primary hover:bg-accent text-white font-bold py-3 rounded-full transition">
+          <button type="submit" className="w-full bg-primary hover:bg-accent text-white font-bold py-3 rounded-sm transition">
             Send Message
           </button>
         </form>
