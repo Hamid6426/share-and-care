@@ -18,7 +18,7 @@ export default function Hero() {
         alt="Hero Image"
         width={1280}
         height={720}
-        className="aspect-video w-full"
+        className="aspect-video w-full opacity-75"
       />
 
       <div className="absolute top-[5%] left-[5%] flex flex-col gap-0 justify-center text-[4.5vw]">
