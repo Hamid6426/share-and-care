@@ -1,7 +1,5 @@
-import Tooltip from "@/components/Tooltips";
 import Link from "next/link";
 import React from "react";
-import { MdHome, MdLogout } from "react-icons/md";
 import { toast } from "react-toastify";
 
 export default function DonorNavbar() {
