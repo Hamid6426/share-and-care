@@ -5,8 +5,13 @@ import DonorSidebar from "./components/DonorSidebar";
 import React, { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import DonorNavbar from "@/components/DashboardNavbar";
 
-export default function DonorDashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DonorDashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { currentUser, isUserLoading } = useAuth();
   const router = useRouter();
 
@@ -38,7 +43,11 @@ export default function DonorDashboardLayout({ children }: { children: React.Rea
   return (
     <div className="flex">
       <DonorSidebar />
-      <main className="flex-1 px-4 py-2">{children}</main>
+
+      <main className="flex-1">
+        <DonorNavbar />
+        <div className="p-3 bg-background">{children}</div>
+      </main>
     </div>
   );
 }

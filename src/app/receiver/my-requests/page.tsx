@@ -72,8 +72,8 @@ const MyRequests = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-semibold mb-4 text-green-700">Requested Items</h2>
+    <div className="container mx-auto max-w-2xl p-4">
+      <h2 className="text-2xl font-semibold mb-4 text-primary text-center ">Requested Items</h2>
       {items.length > 0 ? (
         <table className="min-w-full table-auto border-collapse">
           <thead>
@@ -113,7 +113,11 @@ const MyRequests = () => {
           </tbody>
         </table>
       ) : (
-        <p className="text-center text-green-700">No requested items found.</p>
+         <div className="flex items-center justify-center w-full border-2 bg-card border-gray-200 rounded-lg aspect-16/8 my-6">
+          <p className="text-center shadow-soft aspect-16/8 px-8 bg-card rounded-lg flex items-center justify-center">
+            No requested items found.
+          </p>
+        </div>
       )}
     </div>
   );

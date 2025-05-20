@@ -61,9 +61,9 @@ const MyListing = () => {
   }, [currentPage]);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 bg-[var(--color-background)]">
-      <h2 className="text-3xl font-bold mb-6 text-[var(--color-primary)]">
-        My Items
+    <div className="max-w-2xl mx-auto px-4 py-6 bg-[var(--color-background)]">
+      <h2 className="text-3xl text-center font-bold mb-6 text-[var(--color-primary)]">
+        My Listed Items
       </h2>
 
       {isLoading ? (
@@ -77,7 +77,7 @@ const MyListing = () => {
             return (
               <div
                 key={item._id}
-                className="bg-[var(--color-card)] border border-gray-200 rounded-lg shadow p-6 flex flex-col md:flex-row gap-4"
+                className="bg-[var(--color-card)] border border-gray-200 rounded-lg shadow p-6 flex flex-col items-center md:flex-row gap-8"
               >
                 {/* Image or placeholder */}
                 <div className="flex-shrink-0">

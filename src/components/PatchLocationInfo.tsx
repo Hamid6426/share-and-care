@@ -71,7 +71,7 @@ const PatchLocationInfo: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center ">
-      <div className="w-full   rounded-lg shadow-lg p-6">
+      <div className="w-full shadow-soft bg-card rounded-lg p-6">
         <h3 className="text-xl font-semibold text-primary mb-4">Location Info</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           {Object.entries(locationInfo).map(([key, value]) => (
@@ -85,11 +85,11 @@ const PatchLocationInfo: React.FC = () => {
                 type="text"
                 value={value || ""}
                 onChange={handleChange}
-                className="w-full border border-primary rounded-md px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary"
+                className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
               />
             </div>
           ))}
-          <button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-accent text-white font-medium py-2 rounded-md transition disabled:opacity-50">
+          <button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-accent text-white font-medium py-2 rounded-md transition disabled:opacity-50 border-primary">
             {isSubmitting ? "Updating…" : "Update Location Info"}
           </button>
         </form>

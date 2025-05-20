@@ -73,7 +73,7 @@ const UploadProfilePicture: React.FC<UploadProfilePictureProps> = ({ onUploadSuc
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
+    <div className="flex flex-col items-center space-y-4 ">
       <div className="relative">
         <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-100 relative">
           {previewUrl ? (

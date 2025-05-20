@@ -35,7 +35,7 @@ const Profile = () => {
     ) : null;
 
   return (
-    <div className="mx-auto max-w-4xl bg-white shadow-lg rounded-xl overflow-hidden">
+    <div className="mx-auto max-w-2xl bg-white shadow-lg rounded-xl overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-accent p-6 text-white flex flex-col md:flex-row space-x-4">
         {currentUser.profilePicture ? (

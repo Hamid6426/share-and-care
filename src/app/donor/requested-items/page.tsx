@@ -11,9 +11,12 @@ const RequestedItems = () => {
   const fetchItemsByStatus = async (status: string) => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get(`/api/items/donor/items-by-status?status=${status}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const res = await axiosInstance.get(
+        `/api/items/donor/items-by-status?status=${status}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setItems(res.data.items || []);
     } catch {
       toast.error("Failed to fetch items");
@@ -28,7 +31,9 @@ const RequestedItems = () => {
 
   const acceptRequest = async (itemId: string) => {
     try {
-      await axiosInstance.post(`/api/items/${itemId}/donor-actions/accept-request`);
+      await axiosInstance.post(
+        `/api/items/${itemId}/donor-actions/accept-request`
+      );
       toast.success("Request accepted");
       fetchItemsByStatus("requested");
     } catch {
@@ -38,7 +43,9 @@ const RequestedItems = () => {
 
   const rejectRequest = async (itemId: string) => {
     try {
-      await axiosInstance.post(`/api/items/${itemId}/donor-actions/reject-request`);
+      await axiosInstance.post(
+        `/api/items/${itemId}/donor-actions/reject-request`
+      );
       toast.info("Request rejected");
       fetchItemsByStatus("requested");
     } catch {
@@ -47,15 +54,21 @@ const RequestedItems = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold text-green-700 mb-4">Requested Items</h1>
+    <div className="mx-auto max-w-2xl">
+      <h1 className="text-2xl font-bold text-primary text-center">
+        Requested Items
+      </h1>
       {loading ? (
         <p>Loading...</p>
       ) : items.length === 0 ? (
-        <p>No requested items found.</p>
+        <div className="flex items-center justify-center w-full border-2 bg-card border-gray-200 rounded-lg aspect-16/8 my-6">
+          <p className="text-center shadow-soft aspect-16/8 px-8 bg-card rounded-lg flex items-center justify-center">
+            No requested items found.
+          </p>
+        </div>
       ) : (
-        <table className="min-w-full border rounded-lg overflow-hidden">
-          <thead className="bg-green-100 text-green-800">
+        <table className="w-full border rounded-lg overflow-hidden">
+          <thead className="bg-green-100 text-primary">
             <tr>
               <th className="p-3 border">Title</th>
               <th className="p-3 border">Category</th>
@@ -76,10 +89,16 @@ const RequestedItems = () => {
                 <td className="p-2">{item.receiver?.name}</td>
                 <td className="p-2">{item.receiver?.email}</td>
                 <td className="p-2 flex gap-2">
-                  <button onClick={() => acceptRequest(item._id)} className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded disabled:bg-gray-300">
+                  <button
+                    onClick={() => acceptRequest(item._id)}
+                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded disabled:bg-gray-300"
+                  >
                     Accept
                   </button>
-                  <button onClick={() => rejectRequest(item._id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded disabled:bg-gray-300">
+                  <button
+                    onClick={() => rejectRequest(item._id)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded disabled:bg-gray-300"
+                  >
                     Reject
                   </button>
                 </td>
@@ -88,14 +107,17 @@ const RequestedItems = () => {
           </tbody>
         </table>
       )}
-      <div>
-        <Link href="/donor/my-listing" className="text-sm mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-          My Listings
-        </Link>
-        <Link href="/donor/accepted-items" className="text-sm  mt-4 ml-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      <div className="grid grid-cols-2 gap-6 text-center">
+        <Link
+          href="/donor/accepted-items"
+          className=" bg-primary text-white px-4 py-2 rounded hover:bg-accent"
+        >
           Accepted Items
         </Link>
-        <Link href="/donor/rejected-items" className="text-sm  mt-4 ml-4 inline-block bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
+        <Link
+          href="/donor/rejected-items"
+          className=" bg-primary text-white px-4 py-2 rounded hover:bg-accent"
+        >
           Rejected Items
         </Link>
       </div>

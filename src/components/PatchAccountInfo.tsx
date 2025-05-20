@@ -58,8 +58,8 @@ const PatchAccountInfo: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center ">
-      <div className="w-full   rounded-lg shadow-lg p-6">
+    <div className="flex items-center justify-center  ">
+      <div className="w-full rounded-lg shadow-soft bg-card p-6">
         <h3 className="text-xl font-semibold text-primary mb-4">Account Information</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name Field */}
@@ -95,7 +95,7 @@ const PatchAccountInfo: React.FC = () => {
           </div>
 
           {/* Submit Button */}
-          <button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-accent text-white font-medium py-2 rounded-md transition disabled:opacity-50">
+          <button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-accent text-white font-medium py-2 rounded-md transition disabled:opacity-50 border-primary">
             {isSubmitting ? "Updating…" : "Update Account Info"}
           </button>
         </form>

@@ -19,8 +19,8 @@ export default function ReceiverSettings() {
     }
   
     return (
-      <div className="max-w-sm mx-auto my-12">
-        <h1 className="text-2xl font-bold text-center">Settings</h1>
+      <div className="max-w-sm mx-auto">
+        <h1 className="text-2xl text-primary font-bold text-center">Settings</h1>
         <p className="text-gray-500 text-center mb-6 mt-2">Manage your account settings and preferences.</p>
         <div className="space-y-6">
         <UploadProfilePicture />

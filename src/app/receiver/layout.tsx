@@ -4,8 +4,13 @@ import ReceiverSidebar from "./components/ReceiverSidebar";
 import React, { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import DonorNavbar from "@/components/DashboardNavbar";
 
-export default function ReceiverDashboardLayout({ children }: { children: React.ReactNode }) {
+export default function ReceiverDashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { currentUser, isUserLoading } = useAuth();
   const router = useRouter();
 
@@ -37,7 +42,11 @@ export default function ReceiverDashboardLayout({ children }: { children: React.
   return (
     <div className="flex">
       <ReceiverSidebar />
-      <main className="flex-1 px-4 py-2">{children}</main>
+
+      <main className="flex-1">
+        <DonorNavbar />
+        <div className="p-3 bg-background">{children}</div>
+      </main>
     </div>
   );
 }

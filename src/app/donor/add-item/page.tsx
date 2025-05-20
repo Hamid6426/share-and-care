@@ -20,14 +20,26 @@ const AddItem = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!currentUser) {
-    return <p className="text-center py-10 text-red-600 font-semibold">Please log in to add items.</p>;
+    return (
+      <p className="text-center py-10 text-red-600 font-semibold">
+        Please log in to add items.
+      </p>
+    );
   }
 
   if (currentUser.role !== "donor") {
-    return <p className="text-center py-10 text-yellow-600 font-semibold">Only donors can add donation items.</p>;
+    return (
+      <p className="text-center py-10 text-yellow-600 font-semibold">
+        Only donors can add donation items.
+      </p>
+    );
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -61,19 +73,34 @@ const AddItem = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-xl mx-auto p-6 bg-green-100 rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-6 text-green-800">Add New Item</h2>
+    <div className="flex justify-center my-6">
+      <div className="w-full max-w-md bg-card shadow-soft rounded-md p-8">
+        <h2 className="text-2xl font-bold mb-6 text-primary">Add New Item</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="title" className="block mb-1 font-medium text-green-900">
+            <label
+              htmlFor="title"
+              className="block mb-1 font-medium text-text-primary"
+            >
               Title
             </label>
-            <input id="title" name="title" type="text" value={formData.title} onChange={handleChange} required className="w-full px-4 py-2 border border-green-500 rounded" placeholder="Item title" />
+            <input
+              id="title"
+              name="title"
+              type="text"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
+              placeholder="Item title"
+            />
           </div>
 
           <div>
-            <label htmlFor="description" className="block mb-1 font-medium text-green-900">
+            <label
+              htmlFor="description"
+              className="block mb-1 font-medium text-text-primary"
+            >
               Description
             </label>
             <textarea
@@ -82,14 +109,19 @@ const AddItem = () => {
               value={formData.description}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-green-500 rounded"
+              className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
               placeholder="Item description"
               rows={4}
             />
           </div>
 
           <div>
-            <label htmlFor="quantity" className="block text-green-800 text-sm mb-1">Quantity</label>
+            <label
+              htmlFor="quantity"
+              className="block text-primary text-sm mb-1"
+            >
+              Quantity
+            </label>
             <input
               id="quantity"
               name="quantity"
@@ -97,13 +129,16 @@ const AddItem = () => {
               value={formData.quantity}
               onChange={handleChange}
               min={1}
-              className="w-full px-4 py-2 border border-green-500 rounded"
+              className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="category" className="block mb-1 font-medium text-green-900">
+            <label
+              htmlFor="category"
+              className="block mb-1 font-medium text-text-primary"
+            >
               Category
             </label>
             <input
@@ -113,23 +148,36 @@ const AddItem = () => {
               value={formData.category}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-green-500 rounded"
+              className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
               placeholder="e.g. clothes, electronics"
             />
           </div>
 
           <div>
-            <label htmlFor="condition" className="block mb-1 font-medium text-green-900">
+            <label
+              htmlFor="condition"
+              className="block mb-1 font-medium text-text-primary"
+            >
               Condition
             </label>
-            <select id="condition" name="condition" value={formData.condition} onChange={handleChange} className="w-full px-4 py-2 border border-green-500 rounded">
+            <select
+              id="condition"
+              name="condition"
+              value={formData.condition}
+              onChange={handleChange}
+              className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
+            >
               <option value="new">New</option>
               <option value="used">Used</option>
               <option value="poor">Poor</option>
             </select>
           </div>
 
-          <button type="submit" disabled={isSubmitting} className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-primary hover:bg-accent text-white font-semibold py-2 rounded"
+          >
             {isSubmitting ? "Submitting…" : "Add Item"}
           </button>
         </form>

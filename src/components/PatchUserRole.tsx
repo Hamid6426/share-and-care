@@ -48,7 +48,7 @@ const PatchUserRole: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center ">
-      <div className="w-full   rounded-lg shadow-lg p-6">
+      <div className="w-full shadow-soft bg-card rounded-lg p-6">
         <h3 className="text-xl font-semibold text-primary mb-4">Update My Role</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -60,13 +60,13 @@ const PatchUserRole: React.FC = () => {
               name="newRole"
               value={newRole}
               onChange={handleChange}
-              className="w-full border border-primary rounded-md px-3 py-2 focus:border-primary focus:ring-2 focus:ring-primary"
+              className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
             >
               <option value="donor">Donor</option>
               <option value="receiver">Receiver</option>
             </select>
           </div>
-          <button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-accent text-white font-medium py-2 rounded-md transition disabled:opacity-50">
+          <button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-accent text-white font-medium py-2 rounded-md transition disabled:opacity-50 border-primary">
             {isSubmitting ? "Updating…" : "Update Role"}
           </button>
         </form>

@@ -4,8 +4,8 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { MdChat, MdClose, MdMenu } from "react-icons/md";
-import Tooltip from "./Tooltips";
+import { MdClose, MdMenu } from "react-icons/md";
+import { FaComments } from "react-icons/fa";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -39,9 +39,7 @@ export default function Navbar() {
           <Link
             href="/about"
             className={`${
-              pathname === "/about"
-                ? "text-accent  "
-                : "hover:text-accent"
+              pathname === "/about" ? "text-accent  " : "hover:text-accent"
             }`}
           >
             ABOUT
@@ -49,9 +47,7 @@ export default function Navbar() {
           <Link
             href="/contact"
             className={`${
-              pathname === "/contact"
-                ? "text-accent  "
-                : "hover:text-accent"
+              pathname === "/contact" ? "text-accent  " : "hover:text-accent"
             }`}
           >
             CONTACT
@@ -59,9 +55,7 @@ export default function Navbar() {
           <Link
             href="/listing"
             className={`${
-              pathname === "/listing"
-                ? "text-accent  "
-                : "hover:text-accent"
+              pathname === "/listing" ? "text-accent  " : "hover:text-accent"
             }`}
           >
             LISTING
@@ -72,7 +66,7 @@ export default function Navbar() {
           {!isUserLoading && currentUser ? (
             <div className="flex items-center gap-4">
               <Link href="/chats">
-                <MdChat className="text-primary  text-2xl hover:text-secondary transition-colors duration-300" />
+                <FaComments className="text-primary  text-2xl hover:text-secondary transition-colors duration-300" />
               </Link>
               <Link
                 href={`/${currentUser.role}`}
@@ -131,17 +125,18 @@ export default function Navbar() {
             LISTING
           </Link>
           {!isUserLoading && currentUser ? (
-            <div>
-              <Link
-                href="chats"
-                className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
-              ></Link>
-
+            <div className="flex flex-col gap-3 w-full">
               <Link
                 href={`/${currentUser.role}`}
                 className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
               >
                 DASHBOARD
+              </Link>
+              <Link
+                href="chats"
+                className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
+              >
+                CHATS
               </Link>
             </div>
           ) : (
