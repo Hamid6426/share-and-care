@@ -4,8 +4,8 @@ export default function CallToAction() {
   return (
     <section className="text-white text-center bg-primary">
       <div className="max-w-5xl mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
-        <p className="mb-8 text-lg">
+        <h2 className="text-5xl font-bold mb-4">Ready to Make a Difference?</h2>
+        <p className="mb-8 text-2xl">
           Post your unused items and help someone in need today.
         </p>
         <Link

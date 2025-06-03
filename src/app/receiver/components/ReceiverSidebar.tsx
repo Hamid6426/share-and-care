@@ -24,7 +24,7 @@ export default function ReceiverSidebar() {
         </Tooltip>
 
         <Tooltip message="My Requests">
-          <Link href="/receiver/my-requests">
+          <Link href="/receiver/my-requested-items">
             <FaClipboardList className="hover:text-secondary transition-colors duration-300" />
           </Link>
         </Tooltip>

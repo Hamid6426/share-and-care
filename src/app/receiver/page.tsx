@@ -28,7 +28,7 @@ export default function ReceiverDashboardOverview() {
   const menuItems = [
     {
       label: "My Requests",
-      href: "/receiver/my-requests",
+      href: "/receiver/my-requested-items",
       icon: <FaClipboardList className="text-[4rem]" />,
     },
     {
