@@ -20,18 +20,44 @@ export async function POST(req: NextRequest) {
     // Parse the request body
     const body = await req.json();
     if (!body) {
-      return NextResponse.json({ error: "Request body is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Request body is required" },
+        { status: 400 }
+      );
     }
 
-    if (!body.title || !body.description || !body.quantity || !body.category || !body.condition) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (
+      !body.title ||
+      !body.description ||
+      !body.quantity ||
+      !body.category ||
+      !body.condition
+    ) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
     if (body.quantity <= 0) {
-      return NextResponse.json({ error: "Quantity must be greater than 0" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Quantity must be greater than 0" },
+        { status: 400 }
+      );
     }
 
-    const item = await Item.create({ ...body, donor: userId });
+    if (body.quantity <= 0) {
+      return NextResponse.json(
+        { error: "Quantity must be greater than 0" },
+        { status: 400 }
+      );
+    }
+
+    const item = await Item.create({
+      ...body,
+      donor: userId,
+      category: body.category.toLowerCase(),
+    });
 
     return NextResponse.json(item, { status: 201 });
   } catch (error: any) {
@@ -56,17 +82,23 @@ export async function GET(req: NextRequest) {
   const filter: any = {};
 
   if (searchParams.get("status")) filter.status = searchParams.get("status");
-  if (searchParams.get("category")) filter.category = searchParams.get("category");
+  if (searchParams.get("category"))
+    filter.category = searchParams.get("category");
 
   // Calculate the offset for pagination
   const skip = (page - 1) * limit;
 
   try {
     // Fetch the items with pagination and filtering
-    const items = await Item.find(filter).skip(skip).limit(limit).populate("donor", "name email").populate("receiver", "name email").lean();;
+    const items = await Item.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .populate("donor", "name email country state city")
+      .populate("receiver", "name email country state city")
+      .lean();
 
     // Get the total count of items for pagination
-      const totalItems = await Item.countDocuments(filter);
+    const totalItems = await Item.countDocuments(filter);
 
     return NextResponse.json(
       {
@@ -79,6 +111,9 @@ export async function GET(req: NextRequest) {
     );
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "Failed to fetch items" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch items" },
+      { status: 500 }
+    );
   }
 }

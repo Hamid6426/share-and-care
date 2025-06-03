@@ -34,7 +34,7 @@ export default function Navbar() {
               pathname === "/" ? "text-accent  " : "hover:text-accent"
             }`}
           >
-            HOME
+            Home
           </Link>
           <Link
             href="/about"
@@ -42,7 +42,7 @@ export default function Navbar() {
               pathname === "/about" ? "text-accent  " : "hover:text-accent"
             }`}
           >
-            ABOUT
+            About
           </Link>
           <Link
             href="/contact"
@@ -50,7 +50,7 @@ export default function Navbar() {
               pathname === "/contact" ? "text-accent  " : "hover:text-accent"
             }`}
           >
-            CONTACT
+            Contact
           </Link>
           <Link
             href="/listing"
@@ -58,7 +58,7 @@ export default function Navbar() {
               pathname === "/listing" ? "text-accent  " : "hover:text-accent"
             }`}
           >
-            LISTING
+            Listing
           </Link>
         </div>
 
@@ -72,7 +72,7 @@ export default function Navbar() {
                 href={`/${currentUser.role}`}
                 className="bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
               >
-                DASHBOARD
+                Dashboard
               </Link>
             </div>
           ) : (
@@ -80,7 +80,7 @@ export default function Navbar() {
               href="/signin"
               className="bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
             >
-              SIGN IN
+              Login
             </Link>
           )}
         </div>
@@ -110,19 +110,25 @@ export default function Navbar() {
             href="/about"
             className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
           >
-            ABOUT
+            Home
+          </Link>
+          <Link
+            href="/about"
+            className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
+          >
+            About
           </Link>
           <Link
             href="/contact"
             className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
           >
-            CONTACT
+            Contact
           </Link>
           <Link
             href="/listing"
             className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
           >
-            LISTING
+            Listing
           </Link>
           {!isUserLoading && currentUser ? (
             <div className="flex flex-col gap-3 w-full">
@@ -130,13 +136,13 @@ export default function Navbar() {
                 href={`/${currentUser.role}`}
                 className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
               >
-                DASHBOARD
+                Dashboard
               </Link>
               <Link
                 href="chats"
                 className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
               >
-                CHATS
+                Chat
               </Link>
             </div>
           ) : (
@@ -144,7 +150,7 @@ export default function Navbar() {
               href="/signin"
               className="w-full bg-primary text-white hover:bg-accent px-4 py-2 rounded-md transition"
             >
-              SIGN IN
+              Login
             </Link>
           )}
         </nav>

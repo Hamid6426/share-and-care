@@ -8,12 +8,19 @@ export interface IItem extends Document {
   category: string;
   condition: "new" | "used" | "poor";
   images: string[];
+  price: number;
 
   donor: IUser; // populated donor details
   receiver?: IUser | null; // populated when someone claims the item
   requesters: IUser[]; // populated list of users who have requested
 
-  status: "inactive" | "available" | "requested" | "claimed" | "picked" | "donated";
+  status:
+    | "inactive"
+    | "available"
+    | "requested"
+    | "claimed"
+    | "picked"
+    | "donated";
   // inactive, when the donor change his mind about donating. simply a soft delete
   // available mean an item is available for donation
   // requested mean a user has requested for the item "it is not confirmed by donor yet"
@@ -59,6 +66,13 @@ const ItemSchema: Schema<IItem> = new Schema(
       default: [],
     },
 
+    price: {
+      type: Number,
+      default: 0,
+      min: 0,
+      required: true,
+    },
+
     donor: { type: Schema.Types.ObjectId, ref: "User", required: true },
     receiver: { type: Schema.Types.ObjectId, ref: "User", default: null },
 
@@ -70,7 +84,14 @@ const ItemSchema: Schema<IItem> = new Schema(
 
     status: {
       type: String,
-      enum: ["inactive", "available", "requested", "claimed", "picked", "donated"],
+      enum: [
+        "inactive",
+        "available",
+        "requested",
+        "claimed",
+        "picked",
+        "donated",
+      ],
       default: "available",
     },
 
@@ -88,4 +109,10 @@ const ItemSchema: Schema<IItem> = new Schema(
   { timestamps: true }
 );
 
-export default (mongoose.models.Item as Model<IItem>) || mongoose.model<IItem>("Item", ItemSchema);
+export default (mongoose.models.Item as Model<IItem>) ||
+  mongoose.model<IItem>("Item", ItemSchema);
+
+ItemSchema.methods.isFree = function () {
+  return this.price === 0;
+};
+

@@ -72,6 +72,17 @@ const AddItem = () => {
     }
   };
 
+  const categories = [
+    "Clothes",
+    "Books",
+    "Food",
+    "Electronics",
+    "Furniture",
+    "Stationary",
+    "Toys",
+    "Other",
+  ];
+
   return (
     <div className="flex justify-center my-6">
       <div className="w-full max-w-md bg-card shadow-soft rounded-md p-8">
@@ -141,16 +152,23 @@ const AddItem = () => {
             >
               Category
             </label>
-            <input
+            <select
               id="category"
               name="category"
-              type="text"
               value={formData.category}
               onChange={handleChange}
               required
               className="w-full border border-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-md px-3 py-2"
-              placeholder="e.g. clothes, electronics"
-            />
+            >
+              <option value="" disabled>
+                Select a category
+              </option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

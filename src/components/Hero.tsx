@@ -18,14 +18,16 @@ export default function Hero() {
         alt="Hero Image"
         width={1280}
         height={720}
-        className="aspect-video w-full opacity-75"
+        className="aspect-video w-full relative z-0"
       />
+      <div className="absolute top-0 left-0 w-full aspect-video h-full bg-[#00000071] z-20"/>
+    
 
-      <div className="absolute top-[5%] left-[5%] flex flex-col gap-0 justify-center text-[4.5vw]">
-        <div className="text-primary font-bold text-nowrap">
+      <div className="absolute z-30 flex flex-col gap-0 aspect-video w-full justify-center items-center text-[4.5vw]">
+        <div className="text-white font-bold text-nowrap">
           Give What You Can.
         </div>
-        <div className="text-primary font-bold mb-6 text-nowrap">
+        <div className="text-white  font-bold mb-6 text-nowrap">
           Get What You Need.
         </div>
         {/* <div className="text-card text-xl font-bold">

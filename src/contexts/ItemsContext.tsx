@@ -8,11 +8,33 @@ interface Item {
   title: string;
   description: string;
   quantity: number;
+  category: string;
+  price: number;
   images: string[];
-  status: "inactive" | "available" | "requested" | "claimed" | "picked" | "donated";
+  status:
+    | "inactive"
+    | "available"
+    | "requested"
+    | "claimed"
+    | "picked"
+    | "donated";
   isRequested: boolean;
-  donor: { _id: string; name: string; email: string };
-  receiver: { _id: string; name: string; email: string } | null;
+  donor: {
+    _id: string;
+    name: string;
+    email: string;
+    country: string;
+    state: string;
+    city: string;
+  };
+  receiver: {
+    _id: string;
+    name: string;
+    email: string;
+    country: string;
+    state: string;
+    city: string;
+  } | null;
 }
 
 interface ItemsContextType {
@@ -25,7 +47,9 @@ interface ItemsContextType {
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
 
-export const ItemsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ItemsProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [items, setItems] = useState<Item[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -51,7 +75,9 @@ export const ItemsProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [currentPage]);
 
   return (
-    <ItemsContext.Provider value={{ items, isLoading, currentPage, totalPages, setCurrentPage }}>
+    <ItemsContext.Provider
+      value={{ items, isLoading, currentPage, totalPages, setCurrentPage }}
+    >
       {children}
     </ItemsContext.Provider>
   );
@@ -59,6 +85,7 @@ export const ItemsProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 export const useItems = (): ItemsContextType => {
   const context = useContext(ItemsContext);
-  if (!context) throw new Error("useItems must be used within an ItemsProvider");
+  if (!context)
+    throw new Error("useItems must be used within an ItemsProvider");
   return context;
 };

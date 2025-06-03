@@ -6,35 +6,35 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import SkeletonCard from "@/components/SkeletonCard";
 import { useItems } from "../contexts/ItemsContext";
+import ItemFilters from "./ItemFilters";
+import { MdInfoOutline, MdLocationPin } from "react-icons/md";
 
-const statusInfo: Record<
-  string,
-  { name: string; color: string; message: string }
-> = {
+const categoryOptions = [
+  "Clothes",
+  "Books",
+  "Food",
+  "Electronics",
+  "Furniture",
+  "Stationary",
+  "Toys",
+  "Other",
+];
+
+const statusInfo = {
   available: {
     name: "Available",
-    color: "bg-green-500 text-white",
-    message: "This item is available for donation.",
-  },
-  requested: {
-    name: "available", // intentional available
-    color: "bg-green-500 text-white",
-    message: "This item is available for donation.",
+    color: "border-2 border-green-500 text-green-500",
+    message: "Available",
   },
   claimed: {
     name: "Claimed",
-    color: "bg-yellow-500 text-white",
-    message: "This item has been claimed.",
+    color: "border-2 border-orange-500 text-orange-500",
+    message: "Claimed",
   },
   picked: {
     name: "Picked",
-    color: "bg-blue-500 text-white",
-    message: "This item has been picked up.",
-  },
-  donated: {
-    name: "Donated",
-    color: "bg-gray-500 text-white",
-    message: "This item has been donated.",
+    color: "border-2 border-purple-500 text-purple-500",
+    message: "Donated",
   },
 };
 
@@ -43,34 +43,31 @@ const ItemListing: React.FC = () => {
   const { items, currentPage, totalPages, setCurrentPage, isLoading } =
     useItems();
 
-  // 1. Search term state
-  const [searchTerm, setSearchTerm] = useState("");
+  // Filters state lifted here
+  const [filters, setFilters] = useState({
+    searchTerm: "",
+    selectedStatuses: new Set(Object.keys(statusInfo)),
+    selectedPriceFilters: new Set(["free", "not-free"]),
+    selectedCategories: new Set(categoryOptions),
+  });
 
-  // 2. Status filter state as a Set for quick lookup
-  const [selectedStatuses, setSelectedStatuses] = useState<Set<string>>(
-    () => new Set(Object.keys(statusInfo))
-  );
-
-  // 3. Memoized filtered items
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
       const matchesSearch = item.title
         .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesStatus = selectedStatuses.has(item.status);
-      return matchesSearch && matchesStatus;
-    });
-  }, [items, searchTerm, selectedStatuses]);
+        .includes(filters.searchTerm.toLowerCase());
+      const matchesStatus = filters.selectedStatuses.has(item.status);
+      const isFree = item.price === 0;
+      const matchesPrice =
+        (isFree && filters.selectedPriceFilters.has("free")) ||
+        (!isFree && filters.selectedPriceFilters.has("not-free"));
+      const matchesCategory = filters.selectedCategories.has(
+        item.category.charAt(0).toUpperCase() + item.category.slice(1)
+      );
 
-  // 4. Handler for toggling status checkboxes
-  const toggleStatus = (status: string) => {
-    setSelectedStatuses((prev) => {
-      const next = new Set(prev);
-      if (next.has(status)) next.delete(status);
-      else next.add(status);
-      return next;
+      return matchesSearch && matchesStatus && matchesPrice && matchesCategory;
     });
-  };
+  }, [items, filters]);
 
   if (isLoading || isUserLoading) {
     return (
@@ -84,53 +81,35 @@ const ItemListing: React.FC = () => {
     );
   }
 
-  // Decide which items to actually render (max 8)
+  const truncateText = (text: string, maxLength: number): string => {
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
   const displayItems = filteredItems.slice(0, 8);
 
   return (
     <div className="max-w-7xl mx-auto p-6 mt-4">
       {/* Filters */}
-      <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Search Input */}
-        <input
-          type="text"
-          placeholder="Search items..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        />
-
-        <div className="flex gap-2 w-full">
-          {/* Status Checkboxes */}
-          <div className="flex flex-nowrap gap-3">
-            {Object.entries(statusInfo).map(([status, { name }]) => (
-              <label
-                key={status}
-                className="inline-flex items-center space-x-2"
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedStatuses.has(status)}
-                  onChange={() => toggleStatus(status)}
-                  className="form-checkbox h-5 w-5 rounded focus:ring-2 focus:ring-primary"
-                />
-                <span className="text-gray-700 text-sm">{name}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-      </div>
+      <ItemFilters
+        categoryOptions={categoryOptions}
+        statusInfo={statusInfo}
+        onFiltersChange={setFilters}
+        initialFilters={filters}
+      />
 
       {/* Items Grid */}
       {filteredItems.length === 0 ? (
-        <p className="text-center text-gray-500">
-          No items match your filters.
+        <p className="flex flex-col justify-center items-center gap-4 text-center text-gray-500 border w-full py-32 rounded-xl">
+          <MdInfoOutline size={80} className="text-red-400" />
+          <div className="text-xl">No items match your filters so kindly select different options</div>
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Render the real items */}
           {displayItems.map((item) => {
-            const status = statusInfo[item.status] ?? statusInfo.available;
+            const status =
+              statusInfo[item.status as keyof typeof statusInfo] ??
+              statusInfo.available;
+
             return (
               <Link
                 key={item._id}
@@ -146,47 +125,51 @@ const ItemListing: React.FC = () => {
                     className="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-full aspect-[4/3] flex items-center justify-center bg-gray-100 font-medium text-gray-500">
-                    No Image uploaded
+                  <div className="w-full aspect-[4/3] flex items-center gap-3 justify-center flex-col bg-gray-50 font-medium text-gray-500">
+                     <MdInfoOutline size={40} className="text-red-400" />
+                     <div className="text-sm">No image is uploaded for this item</div>
                   </div>
                 )}
 
-                <div className="flex-1 px-2 py-2 flex flex-col justify-between">
-                  <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
+                <div className="flex-1 px-4 pt-2 py-4 flex flex-col justify-between">
+                  <h3 className="text-xl font-bold text-gray-900 line-clamp-1">
                     {item.title}
                   </h3>
-                  <span
-                    className={`mt-2 inline-flex items-center gap-3 text-xs font-semibold px-3 py-1 rounded-full ${status.color}`}
-                  >
-                    <span className="h-2 w-2 rounded-full bg-white"></span>
-                    {status.message}
-                  </span>
+
+                  <div className="flex justify-between mt-3">
+                    <span
+                      className={`text-sm px-5 py-1 rounded-md ${
+                        item.price === 0
+                          ? "text-green-500 border-2 border-green-500"
+                          : "text-red-500 border-2 border-red-500"
+                      }`}
+                    >
+                      {item.price === 0 ? "Free" : "Not Free"}
+                    </span>
+                    <span className="py-1 font-semibold text-blue-500">
+                      {item.category}
+                    </span>
+                  </div>
+
+                  <div className="overflow-hidden h-12 mt-2 text-gray-600">
+                    {truncateText(item.description, 60)}
+                  </div>
+
+                  <div className="flex justify-between mt-2">
+                    <div className="py-[6px] flex items-center gap-1">
+                      <MdLocationPin size={18} />
+                      <div className="text-sm text-purple-500">{item.donor.city}</div>
+                    </div>
+                    <span
+                      className={`text-sm px-4 py-[6px] rounded-md ${status.color}`}
+                    >
+                      {status.message}
+                    </span>
+                  </div>
                 </div>
               </Link>
             );
           })}
-
-          {/*   <div>
-          {Array.from({ length: placeholdersCount }).map((_, idx) => (
-         <div className="rounded-2xl">
-              <div
-                key={`placeholder-${idx}`}
-                className="bg-gray-50 border border-gray-200 aspect-[4/3] rounded-t-2xl"
-              />
-              <div className="flex-1 px-2 py-2 flex flex-col justify-between shadow-lg rounded-2xl">
-                <h3 className="opacity-0  text-lg bg-gray font-bold text-gray-900 line-clamp-1">
-                  {" "}
-                </h3>
-                <span
-                  className={`opacity-0 mt-2 inline-flex items-center gap-3 text-xs font-semibold px-3 py-1  shadow md:shadow-md`}
-                >
-                  {" "}
-                  <span className="h-2 w-2 rounded-full bg-white"> </span>-
-                </span>
-              </div>
-            </div> 
-          ))}
-          </div>*/}
         </div>
       )}
 

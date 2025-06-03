@@ -16,8 +16,22 @@ type Item = {
   condition: string;
   images: string[];
   quantity: number;
-  donor: { _id: string; name: string; email: string };
-  receiver?: { _id: string; name: string; email: string };
+  donor: {
+    _id: string;
+    name: string;
+    email: string;
+    country: string;
+    state: string;
+    city: string;
+  };
+  receiver?: {
+    _id: string;
+    name: string;
+    email: string;
+    country: string;
+    state: string;
+    city: string;
+  };
   status: string;
   createdAt: string;
   updatedAt: string;
@@ -91,7 +105,7 @@ export default function PublicItemDetails() {
     );
 
   return (
-    <div className="min-h-screen pt-8 px-4">
+    <div className="min-h-screen py-8 px-4">
       <div className="max-w-2xl mx-auto bg-[var(--color-card)] rounded-lg shadow-soft overflow-hidden">
         {/* Header */}
         <div className="bg-[var(--color-primary)] px-6 py-3">
@@ -149,29 +163,6 @@ export default function PublicItemDetails() {
               </button>
             )}
           </div>
-          {/* Thumbnails row */}
-          {/* <div className="flex gap-2">
-            {Array.from({ length: 3 }).map((_, idx) => {
-              const src = item.images[idx + 1];
-              return (
-                <div
-                  key={idx}
-                  className="relative flex-1 aspect-[4/3] rounded overflow-hidden bg-[var(--color-background)] shadow-inner"
-                >
-                  {src ? (
-                    <Image
-                      src={src}
-                      alt={`Thumbnail ${idx + 1}`}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="animate-pulse w-full h-full bg-[var(--color-background)]" />
-                  )}
-                </div>
-              );
-            })}
-          </div> */}
         </div>
 
         {/* Actions */}
@@ -215,11 +206,9 @@ export default function PublicItemDetails() {
             <Detail term="Category" detail={item.category} />
             <Detail term="Condition" detail={item.condition} />
             <Detail term="Quantity" detail={String(item.quantity)} />
-            <Detail term="Status" detail={item.status.replace("-", " ")} />
+            <Detail term="Address" detail={item.donor.city + ", " + item.donor.state + ", " + item.donor.country} />
             <Detail term="Donor" detail={item.donor.name} />
-            {item.receiver && (
-              <Detail term="Receiver" detail={item.receiver.name} />
-            )}
+
             <Detail
               term="Listed On"
               detail={new Date(item.createdAt).toLocaleDateString()}
@@ -238,7 +227,9 @@ export default function PublicItemDetails() {
 function Detail({ term, detail }: { term: string; detail: string }) {
   return (
     <div>
-      <dt className="font-semibold text-card bg-primary px-4 py-2 rounded-md">{term}</dt>
+      <dt className="font-semibold text-card bg-primary px-4 py-2 rounded-md">
+        {term}
+      </dt>
       <dd className="mt-1 bg-card shadow-md px-4 py-2 rounded-md">{detail}</dd>
     </div>
   );
